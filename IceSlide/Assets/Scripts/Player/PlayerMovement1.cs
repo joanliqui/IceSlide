@@ -28,11 +28,6 @@ public class PlayerMovement1 : MonoBehaviour
     Vector2 dRightPos;
     public bool isGrounded;
 
-    Vector2 tCenterPos;
-    Vector2 tLeftPos;
-    Vector2 tRightPos;
-    public bool colTop;
-
     Vector2 lCenterPos;
     Vector2 lLeftPos;
     Vector2 lRightPos;
@@ -42,6 +37,19 @@ public class PlayerMovement1 : MonoBehaviour
     Vector2 rLeftPos;
     Vector2 rRightPos;
     public bool colRight;
+
+    [Header("Corner Correction Variables")]
+    [SerializeField] private float _topRaycastLenght;
+    [SerializeField] private Vector3 _edgeRaycastOffset;
+    [SerializeField] private Vector3 _innerRaycastOffset;
+
+    Vector2 tInnerLeftPos;
+    Vector2 tOuterLeftPos;
+    Vector2 tInnerRightPos;
+    Vector2 tOuterRightPos;
+
+    public bool colTop;
+    private bool canCornerCorrect;
 
 
 
@@ -153,6 +161,8 @@ public class PlayerMovement1 : MonoBehaviour
             }
         }
 
+        if (canCornerCorrect) CornerCorrect(rb.velocity.y);
+
     }
     private void FixedUpdate()
     {
@@ -175,16 +185,40 @@ public class PlayerMovement1 : MonoBehaviour
         #endregion
 
         #region CheckTop
-        tCenterPos = new Vector2(col.bounds.center.x, col.bounds.max.y);
-        tLeftPos = new Vector2(col.bounds.min.x, col.bounds.max.y);
-        tRightPos = col.bounds.max;
+        bool outerLeft = Physics2D.Raycast(transform.position - _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
+        bool innerLeft = Physics2D.Raycast(transform.position - _innerRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
+        bool innerRight = Physics2D.Raycast(transform.position + _innerRaycastOffset , Vector2.up, _topRaycastLenght, groundMask);
+        bool outerRight = Physics2D.Raycast(transform.position + _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
 
-        bool tCenterGrounded = Physics2D.Raycast(tCenterPos, Vector2.up, lenghtRay, groundMask);
-        bool tLeftGrounded = Physics2D.Raycast(tLeftPos, Vector2.up, lenghtRay, groundMask);
-        bool tRightGrounded = Physics2D.Raycast(tRightPos, Vector2.up, lenghtRay, groundMask);
+        if (outerRight && !innerRight || outerLeft && !innerLeft)
+        {
+            canCornerCorrect = true;
+        }
+        else
+        {
+            canCornerCorrect = false;
+        }
 
-        if (tCenterGrounded || tLeftGrounded || tRightGrounded) colTop = true;
-        else colTop = false;
+        if(outerLeft && innerLeft || outerRight && innerRight)
+        {
+            colTop = true;
+        }
+        else
+        {
+            colTop = false; 
+        }
+
+
+        //tCenterPos = new Vector2(col.bounds.center.x, col.bounds.max.y);
+        //tLeftPos = new Vector2(col.bounds.min.x, col.bounds.max.y);
+        //tRightPos = col.bounds.max;
+
+        //bool tCenterGrounded = Physics2D.Raycast(tCenterPos, Vector2.up, lenghtRay, groundMask);
+        //bool tLeftGrounded = Physics2D.Raycast(tLeftPos, Vector2.up, lenghtRay, groundMask);
+        //bool tRightGrounded = Physics2D.Raycast(tRightPos, Vector2.up, lenghtRay, groundMask);
+
+        //if (tCenterGrounded || tLeftGrounded || tRightGrounded) colTop = true;
+        //else colTop = false;
         #endregion
         
         #region CheckLeft
@@ -216,6 +250,19 @@ public class PlayerMovement1 : MonoBehaviour
         
     }
 
+    void CornerCorrect(float YVelocity)
+    {
+        //Push player to the right
+        RaycastHit2D hit = Physics2D.Raycast(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.left, _topRaycastLenght, groundMask);
+        if(hit.collider != null)
+        {
+            Debug.Log("CornerCorrection!");
+            float _newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.up * _topRaycastLenght,
+                                            transform.position - _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
+
+            transform.position = new Vector3(transform.position.x + _newPos, transform.position.y, transform.position.z);
+        }
+    }
     private void HandleRotation()
     {
         Vector2 mPos = cam.ScreenToWorldPoint(_mousePos);
@@ -510,14 +557,28 @@ public class PlayerMovement1 : MonoBehaviour
         Gizmos.DrawLine(dCenterPos, new Vector2(dCenterPos.x, dCenterPos.y - lenghtRay));
         Gizmos.DrawLine(dLeftPos, new Vector2(dLeftPos.x, dLeftPos.y - lenghtRay));
         Gizmos.DrawLine(dRightPos, new Vector2(dRightPos.x, dRightPos.y - lenghtRay));
+        
         //Top
-        Gizmos.DrawLine(tCenterPos, new Vector2(tCenterPos.x, tCenterPos.y + lenghtRay));
-        Gizmos.DrawLine(tLeftPos, new Vector2(tLeftPos.x, tLeftPos.y + lenghtRay));
-        Gizmos.DrawLine(tRightPos, new Vector2(tRightPos.x, tRightPos.y + lenghtRay));
+        //Corner Check
+        Gizmos.DrawLine(transform.position - _edgeRaycastOffset, transform.position - _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position - _innerRaycastOffset, transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position + _innerRaycastOffset, transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position + _edgeRaycastOffset, transform.position + _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
+        //CornerDistance Check
+        Gizmos.DrawLine(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght,
+                        transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.left * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght,
+                        transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.right * _topRaycastLenght);
+
+        //Gizmos.DrawLine(tCenterPos, new Vector2(tCenterPos.x, tCenterPos.y + lenghtRay));
+        //Gizmos.DrawLine(tLeftPos, new Vector2(tLeftPos.x, tLeftPos.y + lenghtRay));
+        //Gizmos.DrawLine(tRightPos, new Vector2(tRightPos.x, tRightPos.y + lenghtRay));
+
         //Left
         Gizmos.DrawLine(lCenterPos, new Vector2(lCenterPos.x - lenghtRay, lCenterPos.y ));
         Gizmos.DrawLine(lLeftPos, new Vector2(lLeftPos.x - lenghtRay, lLeftPos.y));
         Gizmos.DrawLine(lRightPos, new Vector2(lRightPos.x - lenghtRay, lRightPos.y));
+        
         //Right
         Gizmos.DrawLine(rCenterPos, new Vector2(rCenterPos.x + lenghtRay, rCenterPos.y));
         Gizmos.DrawLine(rLeftPos, new Vector2(rLeftPos.x + lenghtRay, rLeftPos.y));

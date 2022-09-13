@@ -357,18 +357,23 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isGrounded: 0
-  colTop: 0
   colLeft: 0
   colRight: 0
+  _topRaycastLenght: 0.77
+  _edgeRaycastOffset: {x: 0.51, y: 0, z: 0}
+  _innerRaycastOffset: {x: 0.27, y: 0, z: 0}
+  colTop: 0
   _dashSpeed: 60
   radiusError: 1
   cdBtwnDashes: 0.15
   hasArrived: 0
   launchTime: 0.1
   dashColor: {r: 0.18431373, g: 0.88235295, b: 1, a: 1}
+  plusDashTime: 0.2
   groundedGravity: -1
   fallingGravity: -150
-  cutMomentumDivider: 2.5
+  cutYMomentumDivider: 3
+  cutXMomentumDivider: 2.5
   isFalling: 0
   bulletTime: 1.7
   useGravity: 1
