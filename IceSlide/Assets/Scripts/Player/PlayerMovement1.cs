@@ -103,6 +103,7 @@ public class PlayerMovement1 : MonoBehaviour
     public bool IsDashing { get => _isDashing; set => _isDashing = value; }
     public Controls Inputs { get => _inputs; }
     public bool IsPlusDamage { get => isPlusDamage; set => isPlusDamage = value; }
+    public bool IsBulletTime { get => isBulletTime; set => isBulletTime = value; }
     #endregion
 
     private void OnEnable()
