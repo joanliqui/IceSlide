@@ -62,6 +62,9 @@ public class PlayerMovement1 : MonoBehaviour
     public float launchTime = 0.09f; //Tiempo en el que no se detecta si esta tocando la pared
     private int startingWallNumber = 0;
     [SerializeField] Color dashColor;
+    [SerializeField] float plusDashTime = 0.3f;
+    private float cntPlusDashTime;
+    private bool isPlusDamage;
 
     //Rotation Variables
     private bool facingRight = true;
@@ -70,7 +73,8 @@ public class PlayerMovement1 : MonoBehaviour
     [Header("Gravity Variables")]
     [SerializeField] float groundedGravity = -1f;
     [SerializeField] float fallingGravity = -3f;
-    [SerializeField] float cutMomentumDivider = 2;
+    [SerializeField] float cutYMomentumDivider = 3;
+    [SerializeField] float cutXMomentumDivider = 2.5f;
     public bool isFalling;
 
     [Header("Bullet Time")]
@@ -90,6 +94,7 @@ public class PlayerMovement1 : MonoBehaviour
     public Vector2 MousePos { get => _mousePos;}
     public bool IsDashing { get => _isDashing; set => _isDashing = value; }
     public Controls Inputs { get => _inputs; }
+    public bool IsPlusDamage { get => isPlusDamage; set => isPlusDamage = value; }
     #endregion
 
     private void OnEnable()
@@ -133,17 +138,20 @@ public class PlayerMovement1 : MonoBehaviour
         HandleRotation();
 
         if (_isDashing) Dash();
-        else 
+ 
+        if (isPlusDamage) PlusDamageDash();
+
+        if (isBulletTime) BulletTime();
+
+        if (useGravity) HandleGravity();
+
+        if (!_isDashing && !isPlusDamage)
         {
             if (sr.color != Color.white)
             {
                 sr.color = Color.white;
             }
         }
-
-        if (isBulletTime) BulletTime();
-
-        if (useGravity) HandleGravity();
 
     }
     private void FixedUpdate()
@@ -242,6 +250,8 @@ public class PlayerMovement1 : MonoBehaviour
             hasArrived = false;
             _isDashing = true;
             canDash = false;
+            cntPlusDashTime = 0.0f;
+            isPlusDamage = false;
 
             sr.color = dashColor;
 
@@ -254,13 +264,28 @@ public class PlayerMovement1 : MonoBehaviour
 
     public void ArrivedToObjective()
     {
-        appliedMovement.x = appliedMovement.x / 2;
-        appliedMovement.y = appliedMovement.y / cutMomentumDivider;
+        appliedMovement.x = appliedMovement.x / cutXMomentumDivider;
+        appliedMovement.y = appliedMovement.y / cutYMomentumDivider;
         hasArrived = true;
         Debug.Log("HAS ARRIVED");
         _isDashing = false;
+
+
+        isPlusDamage = true;
     }
 
+    public void PlusDamageDash()
+    {
+        //if isPlusDamage....
+        if(cntPlusDashTime < plusDashTime)
+        {
+            cntPlusDashTime += Time.deltaTime;
+        }
+        else
+        {
+            isPlusDamage = false;
+        }
+    }
     private void Dash()
     {
         //si esta Dashing..
@@ -355,6 +380,9 @@ public class PlayerMovement1 : MonoBehaviour
     {
         _isDashing = false;
         hasArrived = false;
+        cntPlusDashTime = 0.0f;
+        isPlusDamage = false;
+
         appliedMovement = Vector3.zero;
         appliedMovement = bounceDir;
     }

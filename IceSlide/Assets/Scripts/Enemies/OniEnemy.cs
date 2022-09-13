@@ -44,7 +44,8 @@ public class OniEnemy : BaseEnemy
     protected override void Dead()
     {
         base.Dead();
-        ps.Play();
+        if(ps)
+            ps.Play();
     }
 
     private void Update()

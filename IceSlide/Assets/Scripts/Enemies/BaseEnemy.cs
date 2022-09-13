@@ -20,7 +20,10 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
 
     protected virtual void Dead()
     {
-        LevelManager.Instance.DeleteEnemyFromPool();
+        if (LevelManager.Instance)
+        {
+            LevelManager.Instance.DeleteEnemyFromPool();
+        }
         
         Collider2D c = GetComponent<Collider2D>();
         sr.enabled = false;

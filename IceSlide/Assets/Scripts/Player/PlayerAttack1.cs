@@ -17,7 +17,7 @@ public class PlayerAttack1 : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (player.IsDashing)
+        if (player.IsDashing || player.IsPlusDamage)
         {
             if(collision.transform.TryGetComponent<IDamagable>(out IDamagable d))
             {
