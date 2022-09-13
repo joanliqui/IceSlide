@@ -6,18 +6,17 @@ public class ArrowAim : MonoBehaviour
 {
     [SerializeField] PlayerMovement1 player;
     Transform arrow;
-    [SerializeField] float rotationSpeed = 1f;
     [SerializeField] LineRenderer line;
     Camera cam;
     [SerializeField] LayerMask groundLayer;
 
     Vector3 mousePos;
     Vector3 originalArrowPos;
-    bool isBulletTime;
+
+    float distance;
     private void Start()
     {
         cam = Camera.main;
-        isBulletTime = false;
         arrow = transform.GetChild(0);
         originalArrowPos = arrow.localPosition;
     }
@@ -27,7 +26,9 @@ public class ArrowAim : MonoBehaviour
 
         if (player.IsBulletTime)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos, 1000, groundLayer);
+            distance = (transform.position - mousePos).magnitude;
+            Debug.Log(distance);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos), distance, groundLayer);
             if(hit.collider != null)
             {
                 Debug.Log(hit.transform.name);
@@ -58,8 +59,24 @@ public class ArrowAim : MonoBehaviour
     {
         mousePos = cam.ScreenToWorldPoint(player.MousePos);
         mousePos.z = 0;
+        SetLineRenderer();
+        transform.up = (mousePos - transform.position).normalized;
+    }
+
+    void SetLineRenderer()
+    {
         line.SetPosition(0, transform.position);
         line.SetPosition(1, arrow.position);
-        transform.up = (mousePos - transform.position).normalized;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (player.IsBulletTime)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawLine(transform.position, mousePos);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos) * distance);
+        }
     }
 }

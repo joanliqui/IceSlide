@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 47141680}
   - component: {fileID: 47141679}
   m_Layer: 6
-  m_Name: Floor (1)
+  m_Name: Techo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1179,7 +1179,7 @@ GameObject:
   - component: {fileID: 744634734}
   - component: {fileID: 744634733}
   m_Layer: 6
-  m_Name: Floor (5)
+  m_Name: ParedDerecha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1702,7 +1702,7 @@ GameObject:
   - component: {fileID: 1464727703}
   - component: {fileID: 1464727702}
   m_Layer: 6
-  m_Name: Floor (7)
+  m_Name: ParedIzquierda
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1974,6 +1974,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 491148297228014272, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: bulletTime
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: angleWallNoDash
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 491148297228014284, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: m_Name
       value: Player

@@ -74,6 +74,9 @@ public class PlayerMovement1 : MonoBehaviour
     private float cntPlusDashTime;
     private bool isPlusDamage;
 
+
+    [SerializeField] private int angleWallNoDash = 20;
+
     //Rotation Variables
     private bool facingRight = true;
     Camera cam;
@@ -334,6 +337,38 @@ public class PlayerMovement1 : MonoBehaviour
             isPlusDamage = false;
         }
     }
+
+    bool CanDashOnWallCauseAngle(float minimum, float maximum)
+    {
+        float angle = MyMaths.CalculateAngle2Points(transform.position, dashPos);
+        Debug.Log(angle);
+
+        bool can = false;
+        if(angle > minimum && angle < minimum + 90)
+        {
+            if(angle > minimum + angleWallNoDash/2)
+            {
+                can = true;
+            }
+            else
+            {
+                can = false;
+            }
+        }
+        else if(angle > maximum - 90 && angle < maximum)
+        {
+            if(angle < maximum - angleWallNoDash/2)
+            {
+                can = true;
+            }
+            else
+            {
+                can = false;
+            }
+        }
+
+        return can;
+    }
     private void Dash()
     {
         //si esta Dashing..
@@ -347,6 +382,33 @@ public class PlayerMovement1 : MonoBehaviour
         if (!hasArrived)
         {
             cntDashTime += Time.deltaTime * 5;
+
+            currentMovement.x = movDir.x;
+            currentMovement.y = movDir.y;
+            currentMovement.z = 0;
+            appliedMovement = currentMovement * _dashSpeed;
+
+            if (colTop && appliedMovement.y > 0.0f)
+            {
+                _isDashing = false;
+                appliedMovement.y = 0;
+            }
+            if (colLeft && appliedMovement.x < 0.0f && !CanDashOnWallCauseAngle(180, 180))
+            {
+                _isDashing = false;
+                appliedMovement.x = 0.0f;
+            }
+            if(colRight && appliedMovement.x > 0.0f && !CanDashOnWallCauseAngle(0, 360))
+            {
+                _isDashing = false;
+                appliedMovement.x = 0.0f;
+            }
+            if(isGrounded && appliedMovement.y < 0.0f && !CanDashOnWallCauseAngle(270, 270))
+            {
+                _isDashing = false;
+                appliedMovement.y = 0;
+            }
+            /*
             if (!colTop && !colRight && !colLeft)
             {
                 currentMovement.x = movDir.x;
@@ -421,6 +483,7 @@ public class PlayerMovement1 : MonoBehaviour
                     }  
                 }
             }
+            */
         }
     }
 
@@ -584,6 +647,10 @@ public class PlayerMovement1 : MonoBehaviour
         Gizmos.DrawLine(rCenterPos, new Vector2(rCenterPos.x + lenghtRay, rCenterPos.y));
         Gizmos.DrawLine(rLeftPos, new Vector2(rLeftPos.x + lenghtRay, rLeftPos.y));
         Gizmos.DrawLine(rRightPos, new Vector2(rRightPos.x + lenghtRay, rRightPos.y));
+
+
+        //Arcs
+        //Gizmos.DrawLine(transform.position, transform.position + )
 
     }
 }
