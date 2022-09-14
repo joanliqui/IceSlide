@@ -73,6 +73,7 @@ public class PlayerMovement1 : MonoBehaviour
     [SerializeField] float plusDashTime = 0.3f;
     private float cntPlusDashTime;
     private bool isPlusDamage;
+    [SerializeField] RippleEffect ripple;
 
 
     [SerializeField] private int angleWallNoDash = 20;
@@ -269,9 +270,9 @@ public class PlayerMovement1 : MonoBehaviour
            
             transform.position = new Vector3(transform.position.x + _newPos + 0.1f , transform.position.y, transform.position.z);
             Debug.Log("CornerCorrection To Right!");
-            if (IsDashing)
-            {
-            }
+
+            startingWallNumber = 3;
+            appliedMovement.y = YVelocity;
         }
         //Push player to the left
         hit = Physics2D.Raycast(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.right, _topRaycastLenght, groundMask);
@@ -282,7 +283,7 @@ public class PlayerMovement1 : MonoBehaviour
 
             transform.position = new Vector3(transform.position.x - newPos - 0.1f, transform.position.y, transform.position.z);
             Debug.Log("CornerCorrection To Left!");
-
+            startingWallNumber = 2;
             appliedMovement.y = YVelocity;
         }
     }
@@ -324,6 +325,7 @@ public class PlayerMovement1 : MonoBehaviour
             isPlusDamage = false;
 
             sr.color = dashColor;
+            //ripple.Emit();
 
             IsTouchingWallWhenDash();
             StartCoroutine(ReturnCanMove());
@@ -410,6 +412,8 @@ public class PlayerMovement1 : MonoBehaviour
             {
                 _isDashing = false;
                 appliedMovement.y = 0;
+                appliedMovement.x /= 2.5f;
+                Debug.Log(appliedMovement);
                 isPlusDamage = true;
                 
             }
