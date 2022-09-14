@@ -90,6 +90,9 @@ public class PlayerMovement1 : MonoBehaviour
 
     [Header("Bullet Time")]
     [SerializeField] float bulletTime = 1f;
+    [Range(0.0f, 1.0f)]
+    [Tooltip("Suele estar enm 0.1")]
+    [SerializeField] float scaleBulletTime = 0.1f;
     float cntBulletTime = 0;
     bool isBulletTime = false;
     bool hasLerped = false;
@@ -165,7 +168,7 @@ public class PlayerMovement1 : MonoBehaviour
             }
         }
 
-        if (canCornerCorrect) CornerCorrect(rb.velocity.y);
+        if (canCornerCorrect) CornerCorrect(appliedMovement.y);
 
     }
     private void FixedUpdate()
@@ -257,14 +260,30 @@ public class PlayerMovement1 : MonoBehaviour
     void CornerCorrect(float YVelocity)
     {
         //Push player to the right
+        Debug.Log("Was Dashing");
         RaycastHit2D hit = Physics2D.Raycast(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.left, _topRaycastLenght, groundMask);
         if(hit.collider != null)
         {
-            Debug.Log("CornerCorrection!");
             float _newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.up * _topRaycastLenght,
                                             transform.position - _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
+           
+            transform.position = new Vector3(transform.position.x + _newPos + 0.1f , transform.position.y, transform.position.z);
+            Debug.Log("CornerCorrection To Right!");
+            if (IsDashing)
+            {
+            }
+        }
+        //Push player to the left
+        hit = Physics2D.Raycast(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.right, _topRaycastLenght, groundMask);
+        if(hit.collider != null)
+        {
+            float newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.up * _topRaycastLenght,
+                                            transform.position + _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
 
-            transform.position = new Vector3(transform.position.x + _newPos, transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x - newPos - 0.1f, transform.position.y, transform.position.z);
+            Debug.Log("CornerCorrection To Left!");
+
+            appliedMovement.y = YVelocity;
         }
     }
     private void HandleRotation()
@@ -341,7 +360,6 @@ public class PlayerMovement1 : MonoBehaviour
     bool CanDashOnWallCauseAngle(float minimum, float maximum)
     {
         float angle = MyMaths.CalculateAngle2Points(transform.position, dashPos);
-        Debug.Log(angle);
 
         bool can = false;
         if(angle > minimum && angle < minimum + 90)
@@ -392,21 +410,39 @@ public class PlayerMovement1 : MonoBehaviour
             {
                 _isDashing = false;
                 appliedMovement.y = 0;
+                isPlusDamage = true;
+                
             }
             if (colLeft && appliedMovement.x < 0.0f && !CanDashOnWallCauseAngle(180, 180))
             {
                 _isDashing = false;
                 appliedMovement.x = 0.0f;
+                isPlusDamage = true;
+
             }
             if(colRight && appliedMovement.x > 0.0f && !CanDashOnWallCauseAngle(0, 360))
             {
                 _isDashing = false;
                 appliedMovement.x = 0.0f;
+                isPlusDamage = true;
+
             }
             if(isGrounded && appliedMovement.y < 0.0f && !CanDashOnWallCauseAngle(270, 270))
             {
                 _isDashing = false;
                 appliedMovement.y = 0;
+                isPlusDamage = true;
+            }
+
+            if(colLeft && startingWallNumber != 3 && startingWallNumber != 5)
+            {
+                _isDashing = false;
+                appliedMovement.x = 0.0f;
+            }
+            else if(colRight && startingWallNumber != 2 && startingWallNumber != 6)
+            {
+                _isDashing = false;
+                appliedMovement.x = 0.0f;
             }
             /*
             if (!colTop && !colRight && !colLeft)
@@ -526,9 +562,6 @@ public class PlayerMovement1 : MonoBehaviour
         {
             startingWallNumber = 3;
         }
-
-        
-
     }
     private void HandleGravity()
     {
@@ -580,15 +613,13 @@ public class PlayerMovement1 : MonoBehaviour
 
         if (!hasLerped)
         {
-            
-
-            if(Time.timeScale > 0.1f)
+            if(Time.timeScale > scaleBulletTime)
             {
                 Time.timeScale -= Time.deltaTime * 10;
             }
             else
             {
-                Time.timeScale = 0.1f;
+                Time.timeScale = scaleBulletTime;
                 hasLerped = true;
             }
         }

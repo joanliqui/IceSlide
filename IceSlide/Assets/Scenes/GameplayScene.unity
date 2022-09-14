@@ -1646,7 +1646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5622478923059595905, guid: ae1412e73f9ebbe4dbb700bf6b7b0b55, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.89
+      value: -2.14
       objectReference: {fileID: 0}
     - target: {fileID: 5622478923059595905, guid: ae1412e73f9ebbe4dbb700bf6b7b0b55, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1686,7 +1686,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5622478923059595908, guid: ae1412e73f9ebbe4dbb700bf6b7b0b55, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae1412e73f9ebbe4dbb700bf6b7b0b55, type: 3}
@@ -1974,17 +1974,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 491148297228014272, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
-      propertyPath: bulletTime
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
-      propertyPath: angleWallNoDash
-      value: 90
+      propertyPath: _edgeRaycastOffset.x
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014284, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: m_Name

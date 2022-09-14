@@ -175,7 +175,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 491148297228014278}
-  rotationSpeed: 100
   line: {fileID: 525295554}
   groundLayer:
     serializedVersion: 2
@@ -603,12 +602,14 @@ MonoBehaviour:
   launchTime: 1
   dashColor: {r: 0.18431373, g: 0.88235295, b: 1, a: 1}
   plusDashTime: 0.2
+  angleWallNoDash: 90
   groundedGravity: -1
   fallingGravity: -150
   cutYMomentumDivider: 3
   cutXMomentumDivider: 2.5
   isFalling: 0
   bulletTime: 1.7
+  scaleBulletTime: 0.07
   useGravity: 1
 --- !u!114 &491148297228014276
 MonoBehaviour:
