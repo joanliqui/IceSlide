@@ -61,6 +61,7 @@ public class ShieldEnemy : BaseEnemy
     void Flip()
     {
         transform.Rotate(new Vector3(0, 180, 0));
+        facingRight = !facingRight;
     }
     public override void Damaged()
     {
