@@ -9,7 +9,6 @@ public class OniEnemy : BaseEnemy
     [SerializeField] LayerMask layer;
     float rayLenght = 0.2f;
     int frameDetection;
-    [SerializeField] ParticleSystem ps;
 
     [SerializeField] bool canMove;
     Transform player;

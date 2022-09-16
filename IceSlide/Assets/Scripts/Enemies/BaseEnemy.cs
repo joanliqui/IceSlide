@@ -5,9 +5,10 @@ using UnityEngine;
 public abstract class BaseEnemy : MonoBehaviour, IDamagable
 {
     [SerializeField] protected int lifes = 1;
-    SpriteRenderer sr;
+    protected SpriteRenderer sr;
     Color baseColor;
     [SerializeField] protected Color damagedColor;
+    [SerializeField] protected ParticleSystem ps;
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();

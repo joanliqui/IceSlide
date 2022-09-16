@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class JumperEnemy : BaseEnemy
 {
-
-    [SerializeField] ParticleSystem ps;
     [SerializeField] float gravityForce = -5;
 
     private Vector2 dCenterPos;

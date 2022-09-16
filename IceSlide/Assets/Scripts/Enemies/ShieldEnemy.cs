@@ -8,12 +8,9 @@ public class ShieldEnemy : BaseEnemy
     [SerializeField] Transform checkerPos;
     [SerializeField] LayerMask layer;
     private ShieldObject shield;
-    private SpriteRenderer sr;
     float rayLenght = 0.2f;
     int frameDetection;
     bool facingRight;
-
-    [SerializeField] ParticleSystem ps;
 
     [SerializeField] bool canMove;
     private Transform player;
@@ -78,7 +75,8 @@ public class ShieldEnemy : BaseEnemy
     {
         base.Dead();
         shield.gameObject.SetActive(false);
-        ps.Play();
+        if(ps)
+            ps.Play();
     }
 
     private void OnDrawGizmos()
