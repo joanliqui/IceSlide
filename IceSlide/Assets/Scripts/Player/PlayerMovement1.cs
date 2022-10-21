@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerMovement1 : MonoBehaviour
 {
@@ -100,6 +101,9 @@ public class PlayerMovement1 : MonoBehaviour
     PostProcessingHandler volume;
     float chromaticLerp;
     float vignetteLerp;
+    [Header("Stamina UI")]
+    [SerializeField] Image fillImage;
+    [SerializeField] GameObject staminaBorder;
     
 
     [Header("Developement Variables")]
@@ -141,6 +145,9 @@ public class PlayerMovement1 : MonoBehaviour
 
         currentMovement = Vector3.zero;
         appliedMovement = Vector3.zero;
+
+
+        staminaBorder.SetActive(false);
     }
 
 
@@ -158,6 +165,11 @@ public class PlayerMovement1 : MonoBehaviour
         if (isPlusDamage) PlusDamageDash();
 
         if (isBulletTime) BulletTime();
+        else
+        {
+            if(staminaBorder.activeInHierarchy)
+                staminaBorder.SetActive(false);
+        }
 
         if (useGravity) HandleGravity();
 
@@ -615,6 +627,8 @@ public class PlayerMovement1 : MonoBehaviour
         vignetteLerp += Time.deltaTime * 5;
         volume.SetVignetteValue(vignetteLerp);
 
+    
+
         if (!hasLerped)
         {
             if(Time.timeScale > scaleBulletTime)
@@ -636,6 +650,18 @@ public class PlayerMovement1 : MonoBehaviour
         {
             RestoreTimeScale();
         }
+
+        StaminaUIController();
+    }
+
+    void StaminaUIController()
+    {
+        if (!staminaBorder.activeInHierarchy)
+        {
+            staminaBorder.SetActive(true);
+        }
+        float amount = Mathf.InverseLerp(bulletTime, 0, cntBulletTime);
+        fillImage.fillAmount = amount;
     }
 
     void RestoreTimeScale()
@@ -666,6 +692,7 @@ public class PlayerMovement1 : MonoBehaviour
         //CornerDistance Check
         Gizmos.DrawLine(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght,
                         transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.left * _topRaycastLenght);
+
         Gizmos.DrawLine(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght,
                         transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.right * _topRaycastLenght);
 

@@ -59,8 +59,6 @@ public class JumperEnemy : BaseEnemy
         HandleGravity(); //Primero la gravedad  /
         Landed();
         Jump(); // Despues el salto: IMPORTANTE/
-
-        if (isJumping) Debug.Log(appliedMovement);
     }
 
     private void FixedUpdate()

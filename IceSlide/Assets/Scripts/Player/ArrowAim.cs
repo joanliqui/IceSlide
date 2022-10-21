@@ -27,7 +27,6 @@ public class ArrowAim : MonoBehaviour
         if (player.IsBulletTime)
         {
             distance = (transform.position - mousePos).magnitude;
-            Debug.Log(distance);
             RaycastHit2D hit = Physics2D.Raycast(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos), distance, groundLayer);
             if(hit.collider != null)
             {

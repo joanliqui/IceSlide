@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public abstract class BaseEnemy : MonoBehaviour, IDamagable
 {
     [SerializeField] protected int lifes = 1;

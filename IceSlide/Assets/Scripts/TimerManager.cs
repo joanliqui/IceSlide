@@ -8,7 +8,14 @@ public class TimerManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] Color warningColor = Color.red;
     bool stopTimer = false;
-    
+
+    private void Awake()
+    {
+        float minutes = Mathf.FloorToInt(time / 60);
+        float seconds = Mathf.FloorToInt(time % 60);
+        Debug.Log(minutes);
+        Debug.Log(seconds);
+    }
 
     private void Update()
     {
@@ -21,6 +28,7 @@ public class TimerManager : MonoBehaviour
             else
             {
                 time = 0;
+                stopTimer = true;
             }
 
             DisplayTime(time);
@@ -29,14 +37,6 @@ public class TimerManager : MonoBehaviour
 
     void DisplayTime(float timeToDisplay)
     {
-        if(timeToDisplay < 0)
-        {
-            timeToDisplay = 0;
-        }
-        else if(timeToDisplay > 0)
-        {
-            timeToDisplay += 1;
-        }
         
         float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
