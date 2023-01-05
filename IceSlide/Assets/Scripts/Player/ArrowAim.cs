@@ -30,7 +30,6 @@ public class ArrowAim : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos), distance, groundLayer);
             if(hit.collider != null)
             {
-                Debug.Log(hit.transform.name);
                 arrow.position = hit.point;
             }
             else
