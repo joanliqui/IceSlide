@@ -7,9 +7,10 @@ public class LevelManager : MonoBehaviour
 {
     private int totalEnemies;
     private static LevelManager instance;
-    [SerializeField] UnityEvent onLevelComplete;
+    public UnityEvent onLevelComplete;
 
     public static LevelManager Instance { get => instance;}
+    BaseWinCondition winConditionManager;
 
 
     private void Awake()
@@ -22,6 +23,9 @@ public class LevelManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        winConditionManager = GetComponent<BaseWinCondition>();
+
         totalEnemies = 0;
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -31,14 +35,11 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-  
-
     public void DeleteEnemyFromPool()
     {
-        totalEnemies--;
-        if(totalEnemies <= 0)
+        if(TryGetComponent<EnemiesWinCondition>(out EnemiesWinCondition winCondition))
         {
-            onLevelComplete?.Invoke();
+            winCondition.CheckWinCondition();
         }
     }
 }

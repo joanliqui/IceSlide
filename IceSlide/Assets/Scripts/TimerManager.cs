@@ -13,8 +13,7 @@ public class TimerManager : MonoBehaviour
     {
         float minutes = Mathf.FloorToInt(time / 60);
         float seconds = Mathf.FloorToInt(time % 60);
-        Debug.Log(minutes);
-        Debug.Log(seconds);
+
     }
 
     private void Update()

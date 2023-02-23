@@ -132,7 +132,6 @@ public class PlayerMovement1 : MonoBehaviour
         col = GetComponent<Collider2D>();
         cam = Camera.main;
         sr = GetComponent<SpriteRenderer>();
-        volume = GameObject.FindGameObjectWithTag("PostProcessing").GetComponent<PostProcessingHandler>();
         chromaticLerp = 0;
         vignetteLerp = 0;
 
@@ -148,6 +147,7 @@ public class PlayerMovement1 : MonoBehaviour
 
 
         staminaBorder.SetActive(false);
+        volume = GameObject.FindGameObjectWithTag("PostProcessing").GetComponent<PostProcessingHandler>();
     }
 
 
@@ -460,82 +460,6 @@ public class PlayerMovement1 : MonoBehaviour
                 _isDashing = false;
                 appliedMovement.x = 0.0f;
             }
-            /*
-            if (!colTop && !colRight && !colLeft)
-            {
-                currentMovement.x = movDir.x;
-                currentMovement.y = movDir.y;
-                currentMovement.z = 0;
-                appliedMovement = currentMovement * _dashSpeed;
-                if (cntDashTime >= launchTime)
-                {
-                    if (isGrounded)
-                    {
-                        if(startingWallNumber != 4 && startingWallNumber != 5 && startingWallNumber != 6)
-                        {
-                            _isDashing = false;
-                        }
-                        else if (startingWallNumber == 4 && dashPos.y - 0.1f < transform.position.y)
-                        {
-                            _isDashing = false;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (cntDashTime < launchTime)
-                {
-                    currentMovement.x = movDir.x;
-                    currentMovement.y = movDir.y;
-                    currentMovement.z = 0;
-                    appliedMovement = currentMovement * _dashSpeed;
-                }
-                else
-                {
-                    if (colTop)
-                    {
-                        if(appliedMovement.y > 0.0f)
-                            appliedMovement.y = 0;
-                        if (startingWallNumber != 1)
-                        {
-                            _isDashing = false;
-                        }
-                        else if(startingWallNumber == 1 && dashPos.y- 0.1f > transform.position.y)
-                        {
-                            _isDashing = false;
-                        }
-                    }
-                    else if (colRight )
-                    {
-                        if(appliedMovement.x > 0.0f)
-                            appliedMovement.x = 0;
-                        if (startingWallNumber != 2 && startingWallNumber != 6)
-                        {
-                            _isDashing = false;
-                        }
-                        else if (startingWallNumber == 2 && dashPos.x + 0.1f > transform.position.x || startingWallNumber == 6 && dashPos.x + 0.1f > transform.position.x)
-                        {
-                            _isDashing = false;
-                        }
-                    }
-                    else if (colLeft)
-                    {
-                        if(appliedMovement.x < 0.0f) //Si mientras dasheabas libremente te chocas con una pared a la izquierda
-                            appliedMovement.x = 0;
-
-                        if (startingWallNumber != 3 && startingWallNumber != 5) //Si
-                        {
-                            _isDashing = false;
-                        }
-                        else if(startingWallNumber == 3  && dashPos.x - 0.1f < transform.position.x || startingWallNumber == 5 && dashPos.x - 0.1f < transform.position.x)
-                        {
-                            _isDashing = false;
-                        }
-                    }  
-                }
-            }
-            */
         }
     }
 
@@ -611,7 +535,10 @@ public class PlayerMovement1 : MonoBehaviour
     private void EnterBulletTime(InputAction.CallbackContext obj)
     {
         isBulletTime = true;
-        volume.HandlePostProcessing(true);
+        if (volume)
+        {
+            volume.HandlePostProcessing(true);
+        }
     }
 
     private void ExitBulletTime(InputAction.CallbackContext obj)
@@ -621,11 +548,14 @@ public class PlayerMovement1 : MonoBehaviour
 
     private void BulletTime()
     {
-        
-        chromaticLerp += Time.deltaTime * 5;
-        volume.SetChromaticAberrationValue(chromaticLerp);
-        vignetteLerp += Time.deltaTime * 5;
-        volume.SetVignetteValue(vignetteLerp);
+        if (volume)
+        {
+            chromaticLerp += Time.deltaTime * 5;
+            volume.SetChromaticAberrationValue(chromaticLerp);
+            vignetteLerp += Time.deltaTime * 5;
+            volume.SetVignetteValue(vignetteLerp);
+        }
+
 
     
 
@@ -666,7 +596,10 @@ public class PlayerMovement1 : MonoBehaviour
 
     void RestoreTimeScale()
     {
-        volume.ResetValues();
+        if (volume)
+        {
+            volume.ResetValues();
+        }
         chromaticLerp = 0.0f;
         vignetteLerp = 0.0f;
         cntBulletTime = 0f;
