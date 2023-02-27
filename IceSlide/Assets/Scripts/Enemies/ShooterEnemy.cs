@@ -61,7 +61,7 @@ public class ShooterEnemy : BaseEnemy
     {
         GameObject go = gameObjectPool.Get();
         go.transform.position = transform.position + new Vector3(0.0f, 1.5f, 0f);
-        Vector2 bulletDirection = MyMaths.CalculateVectorDirectionNormalized(go.transform.position, player.position);
+        Vector2 bulletDirection = MyMaths.CalculateDirectionVectorNormalized(go.transform.position, player.position);
         go.transform.up = bulletDirection;
         go.SetActive(true);
         //shot = false;

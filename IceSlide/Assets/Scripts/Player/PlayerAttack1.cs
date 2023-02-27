@@ -30,11 +30,10 @@ public class PlayerAttack1 : MonoBehaviour
                 Bounce(b.BounceDirection());
             }
         }
-        else
+        else //El player no es invencible
         {
             if (collision.transform.CompareTag("Enemy"))
             {
-                Debug.Log(collision.gameObject.name);
                 life.PlayerDead();
                 player.ArrivedToObjective();
             }

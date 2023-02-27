@@ -19,9 +19,14 @@ public static class MyMaths
         return new Vector2(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    public static Vector3 CalculateVectorDirectionNormalized(Vector3 pos1, Vector3 pos2)
+    public static Vector3 CalculateDirectionVectorNormalized(Vector3 pos1, Vector3 pos2)
     {
         Vector3 dir = pos2 - pos1;
         return dir.normalized; 
+    }
+
+    public static float CalculatePercentage(float bigNumber, float smallNumber)
+    {
+        return (smallNumber / bigNumber) * 100;
     }
 }

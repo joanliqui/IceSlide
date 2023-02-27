@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
+    private const string NEXTLEVEL_COROUTINE = "NextLevelCoroutine";
+
     private int totalEnemies;
     private static LevelManager instance;
     public UnityEvent onLevelComplete;
+    
+    [Scene, SerializeField] string nextLevel;
 
     public static LevelManager Instance { get => instance;}
     BaseWinCondition winConditionManager;
@@ -33,6 +38,8 @@ public class LevelManager : MonoBehaviour
         {
             totalEnemies++;
         }
+        if(nextLevel != string.Empty)
+            onLevelComplete.AddListener(LoadNextLevel);
     }
 
     public void DeleteEnemyFromPool()
@@ -41,5 +48,16 @@ public class LevelManager : MonoBehaviour
         {
             winCondition.CheckWinCondition();
         }
+    }
+
+    private void LoadNextLevel()
+    {
+        StartCoroutine(NEXTLEVEL_COROUTINE);
+    }
+
+    IEnumerator NextLevelCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(nextLevel, LoadSceneMode.Single);
     }
 }

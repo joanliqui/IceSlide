@@ -5235,8 +5235,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1467455197
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 1, g: 0, b: 0.6578746, a: 1}
@@ -5309,10 +5309,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifes: 1
+  damagedColor: {r: 0, g: 0, b: 0, a: 0}
+  ps: {fileID: 454085592338626540}
   movSpeed: -1
   checkerPos: {fileID: 810222372826926916}
   layer:
     serializedVersion: 2
     m_Bits: 64
-  ps: {fileID: 454085592338626540}
   canMove: 1

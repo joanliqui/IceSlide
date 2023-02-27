@@ -44,3 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2606176041
+    locked: 0
+  - name: Enemy
+    uniqueID: 2827512099
+    locked: 0
+  - name: Player
+    uniqueID: 1454449393
+    locked: 0
+  - name: AimArrow
+    uniqueID: 1380424215
+    locked: 0

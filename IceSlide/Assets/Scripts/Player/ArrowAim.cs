@@ -9,9 +9,16 @@ public class ArrowAim : MonoBehaviour
     [SerializeField] LineRenderer line;
     Camera cam;
     [SerializeField] LayerMask groundLayer;
+    [Header("MaterialBlinking")]
+    [SerializeField] float timeBtwBlinks;
+    [SerializeField] Color blinkColor;
+    [SerializeField] int percentageToBlink = 75;
+    Color baseColor;
+    private Material mat;
 
     Vector3 mousePos;
     Vector3 originalArrowPos;
+    private bool oneMatBlink = false;
 
     float distance;
     private void Start()
@@ -19,6 +26,9 @@ public class ArrowAim : MonoBehaviour
         cam = Camera.main;
         arrow = transform.GetChild(0);
         originalArrowPos = arrow.localPosition;
+        mat = line.material;
+        baseColor = mat.color;
+        player.onStayBulletTime += SetLineRendererColor;
     }
     void Update()
     {
@@ -27,7 +37,7 @@ public class ArrowAim : MonoBehaviour
         if (player.IsBulletTime)
         {
             distance = (transform.position - mousePos).magnitude;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos), distance, groundLayer);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, MyMaths.CalculateDirectionVectorNormalized(transform.position, mousePos), distance, groundLayer);
             if(hit.collider != null)
             {
                 arrow.position = hit.point;
@@ -66,6 +76,36 @@ public class ArrowAim : MonoBehaviour
         line.SetPosition(0, transform.position);
         line.SetPosition(1, arrow.position);
     }
+    public void SetLineRendererColor(float percent)
+    {
+        print(percent);
+        if(oneMatBlink == false)
+        {
+            if(percent > percentageToBlink)
+            {
+                StartCoroutine(BlinkLineRendererCoroutine());
+                oneMatBlink = true;
+            }
+        }
+    }
+
+    IEnumerator BlinkLineRendererCoroutine()
+    {
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = blinkColor;
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = baseColor;
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = blinkColor;
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = baseColor;
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = blinkColor;
+        yield return new WaitForSeconds(timeBtwBlinks);
+        mat.color = baseColor;
+        oneMatBlink = false;
+
+    }
 
     private void OnDrawGizmos()
     {
@@ -74,7 +114,7 @@ public class ArrowAim : MonoBehaviour
             Gizmos.color = Color.black;
             Gizmos.DrawLine(transform.position, mousePos);
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position, MyMaths.CalculateVectorDirectionNormalized(transform.position, mousePos) * distance);
+            Gizmos.DrawRay(transform.position, MyMaths.CalculateDirectionVectorNormalized(transform.position, mousePos) * distance);
         }
     }
 }

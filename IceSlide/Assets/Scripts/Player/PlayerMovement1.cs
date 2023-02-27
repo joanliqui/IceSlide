@@ -92,6 +92,17 @@ public class PlayerMovement1 : MonoBehaviour
 
     [Header("Bullet Time")]
     [SerializeField] float bulletTime = 1f;
+
+
+    public delegate void EnteredBulletTime();
+    public event EnteredBulletTime onEnterBulletTime;
+
+    public delegate void StayBulletTime(float percent);
+    public event StayBulletTime onStayBulletTime;
+
+    public delegate void ExitedBulletTime();
+    public event ExitedBulletTime onExitBulletTime;
+
     [Range(0.0f, 1.0f)]
     [Tooltip("Suele estar enm 0.1")]
     [SerializeField] float scaleBulletTime = 0.1f;
@@ -425,7 +436,6 @@ public class PlayerMovement1 : MonoBehaviour
                 _isDashing = false;
                 appliedMovement.y = 0;
                 appliedMovement.x /= 2.5f;
-                Debug.Log(appliedMovement);
                 isPlusDamage = true;
                 
             }
@@ -539,11 +549,13 @@ public class PlayerMovement1 : MonoBehaviour
         {
             volume.HandlePostProcessing(true);
         }
+        onEnterBulletTime?.Invoke();
     }
 
     private void ExitBulletTime(InputAction.CallbackContext obj)
     {
         RestoreTimeScale();
+        onExitBulletTime?.Invoke();
     }
 
     private void BulletTime()
@@ -581,6 +593,8 @@ public class PlayerMovement1 : MonoBehaviour
             RestoreTimeScale();
         }
 
+        float percent = MyMaths.CalculatePercentage(bulletTime, cntBulletTime);
+        onStayBulletTime?.Invoke(percent);
         StaminaUIController();
     }
 
@@ -615,14 +629,17 @@ public class PlayerMovement1 : MonoBehaviour
         Gizmos.DrawLine(dCenterPos, new Vector2(dCenterPos.x, dCenterPos.y - lenghtRay));
         Gizmos.DrawLine(dLeftPos, new Vector2(dLeftPos.x, dLeftPos.y - lenghtRay));
         Gizmos.DrawLine(dRightPos, new Vector2(dRightPos.x, dRightPos.y - lenghtRay));
-        
+
         //Top
         //Corner Check
+        Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position - _edgeRaycastOffset, transform.position - _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
         Gizmos.DrawLine(transform.position - _innerRaycastOffset, transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght);
+
         Gizmos.DrawLine(transform.position + _innerRaycastOffset, transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght);
         Gizmos.DrawLine(transform.position + _edgeRaycastOffset, transform.position + _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
         //CornerDistance Check
+        Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght,
                         transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.left * _topRaycastLenght);
 

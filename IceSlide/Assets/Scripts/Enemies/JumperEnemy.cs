@@ -52,7 +52,6 @@ public class JumperEnemy : BaseEnemy
         {
             if (isGrounded)
             {
-                Debug.Log("GIRO");
                 Flip();
             }
         }
