@@ -6,11 +6,14 @@ public class TimerManager : MonoBehaviour
 {
     [SerializeField] private float time = 60;
     private float initialTime;
+
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] Color warningColor = Color.red;
 
     PostProcessingHandler volume;
     bool stopTimer = false;
+
+    bool ff = true;
 
     private void Awake()
     {
@@ -30,6 +33,13 @@ public class TimerManager : MonoBehaviour
 
     private void Update()
     {
+        //Por algun motivo ese primer frame hace que el tiempo baje de golpe así que ponemos un frame donde el tiempo no baja
+        if (ff)
+        {
+            ff = false;
+            return;
+        }
+
         if (!stopTimer)
         {
             if(time > 0)

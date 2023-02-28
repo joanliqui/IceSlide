@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7292502685000575365}
   - component: {fileID: 7292502685000575386}
   - component: {fileID: 7292502685000575364}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PostProcessingVolume
   m_TagString: PostProcessing
   m_Icon: {fileID: 0}
