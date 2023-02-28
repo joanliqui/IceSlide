@@ -7,6 +7,7 @@ public class PostProcessingHandler : MonoBehaviour
     Volume volume;
     ChromaticAberration cha;
     Vignette vignette;
+    ColorAdjustments colorAdjustments;
 
     [Header("PostPro Max Values")]
     [Range(0.0f, 1.0f)]
@@ -20,31 +21,45 @@ public class PostProcessingHandler : MonoBehaviour
         volume = GetComponent<Volume>();
         volume.profile.TryGet<ChromaticAberration>(out cha);
         volume.profile.TryGet<Vignette>(out vignette);
+        volume.profile.TryGet<ColorAdjustments>(out colorAdjustments);
 
         volume.enabled = true;
         vignette.active = true;
         cha.active = true;
-        ResetValues();
+        colorAdjustments.active = true;
+        ResetValuesForDash();
     }
 
     public void SetChromaticAberrationValue(float a)
     {
-        cha.intensity.Override(Mathf.Clamp(a, 0.0f, chaMaxIntensity));
+        if(cha)
+            cha.intensity.Override(Mathf.Clamp(a, 0.0f, chaMaxIntensity));
     }
 
     public void SetVignetteValue(float a)
     {
-        vignette.intensity.Override(Mathf.Clamp(a, 0.0f, vigneteMaxIntesity));
+        if(vignette)
+            vignette.intensity.Override(Mathf.Clamp(a, 0.0f, vigneteMaxIntesity));
     }
 
-    public void ResetValues()
+    public void SetSaturationValue(int a)
     {
-        cha.intensity.Override(0.0f);
-        vignette.intensity.Override(0.0f);
+        if(colorAdjustments)
+            colorAdjustments.saturation.Override(Mathf.Clamp(a, -100, 0));
+    }
+
+    public void ResetValuesForDash()
+    {
+        if(cha && vignette)
+        {
+            cha.intensity.Override(0.0f);
+            vignette.intensity.Override(0.0f);
+        }
     }
     public void HandlePostProcessing(bool state)
     {
-        volume.enabled = state;
+        if(volume)
+            volume.enabled = state;
     }
    
 }

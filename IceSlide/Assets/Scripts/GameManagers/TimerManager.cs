@@ -5,8 +5,11 @@ using TMPro;
 public class TimerManager : MonoBehaviour
 {
     [SerializeField] private float time = 60;
+    private float initialTime;
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] Color warningColor = Color.red;
+
+    PostProcessingHandler volume;
     bool stopTimer = false;
 
     private void Awake()
@@ -14,6 +17,15 @@ public class TimerManager : MonoBehaviour
         float minutes = Mathf.FloorToInt(time / 60);
         float seconds = Mathf.FloorToInt(time % 60);
 
+    }
+    private void Start()
+    {
+        volume = GameObject.FindGameObjectWithTag("PostProcessing").GetComponent<PostProcessingHandler>();
+        initialTime = time;
+
+        LevelManager.Instance.onLevelComplete.AddListener(StopTimer);
+        //LevelManager.Instance.onLevelComplete.AddListener(RestoreContrast);
+        LevelManager.Instance.onTimeEnded.AddListener(RestoreContrast);
     }
 
     private void Update()
@@ -28,10 +40,22 @@ public class TimerManager : MonoBehaviour
             {
                 time = 0;
                 stopTimer = true;
+                LevelManager.Instance.onTimeEnded?.Invoke();
             }
+            if(timerText)
+                DisplayTime(time);
 
-            DisplayTime(time);
+            //if(volume)
+            //    volume.SetSaturationValue(CalculateSaturationLevel());
         }
+    }
+
+    private int CalculateSaturationLevel()
+    {
+        float t = Mathf.InverseLerp(0, initialTime, time);
+        int r = (int)Mathf.Lerp(-100, 0, t);
+        r = Mathf.Clamp(r, -100, 0);
+        return r;
     }
 
     void DisplayTime(float timeToDisplay)
@@ -52,5 +76,10 @@ public class TimerManager : MonoBehaviour
     public void StopTimer()
     {
         stopTimer = true;
+    }
+
+    public void RestoreContrast()
+    {
+        volume.SetSaturationValue(0);
     }
 }

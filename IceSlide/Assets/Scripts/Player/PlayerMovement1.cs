@@ -104,11 +104,13 @@ public class PlayerMovement1 : MonoBehaviour
     public event ExitedBulletTime onExitBulletTime;
 
     [Range(0.0f, 1.0f)]
-    [Tooltip("Suele estar enm 0.1")]
+    [Tooltip("Suele estar en 0.1")]
     [SerializeField] float scaleBulletTime = 0.1f;
     float cntBulletTime = 0;
+    private const int bulletTimeMultiplier = 100;
     bool isBulletTime = false;
     bool hasLerped = false;
+    public bool isBouncing = false;
     PostProcessingHandler volume;
     float chromaticLerp;
     float vignetteLerp;
@@ -168,6 +170,23 @@ public class PlayerMovement1 : MonoBehaviour
     }
     private void Update()
     {
+        if (isBouncing)
+        {
+            if(colTop)
+            {
+                if(appliedMovement.y > 0f)
+                {
+                    appliedMovement.y = 0f;
+                    isBouncing = false;
+                    Debug.Log("Cut Y Movement");
+                }
+            }
+            if (isGrounded || _isDashing)
+            {
+                isBouncing = false;
+            }
+        }
+
         CheckEnvironment();
         HandleRotation();
 
@@ -181,6 +200,7 @@ public class PlayerMovement1 : MonoBehaviour
             if(staminaBorder.activeInHierarchy)
                 staminaBorder.SetActive(false);
         }
+
 
         if (useGravity) HandleGravity();
 
@@ -239,17 +259,6 @@ public class PlayerMovement1 : MonoBehaviour
             colTop = false; 
         }
 
-
-        //tCenterPos = new Vector2(col.bounds.center.x, col.bounds.max.y);
-        //tLeftPos = new Vector2(col.bounds.min.x, col.bounds.max.y);
-        //tRightPos = col.bounds.max;
-
-        //bool tCenterGrounded = Physics2D.Raycast(tCenterPos, Vector2.up, lenghtRay, groundMask);
-        //bool tLeftGrounded = Physics2D.Raycast(tLeftPos, Vector2.up, lenghtRay, groundMask);
-        //bool tRightGrounded = Physics2D.Raycast(tRightPos, Vector2.up, lenghtRay, groundMask);
-
-        //if (tCenterGrounded || tLeftGrounded || tRightGrounded) colTop = true;
-        //else colTop = false;
         #endregion
         
         #region CheckLeft
@@ -278,7 +287,15 @@ public class PlayerMovement1 : MonoBehaviour
         if (rCenterGrounded || rLeftGrounded || rRightGrounded) colRight = true;
         else colRight = false;
         #endregion
-        
+
+
+        //if (isBouncing)
+        //{
+        //    if(colLeft || colRight || colTop || isGrounded || isBulletTime || _isDashing)
+        //    {
+        //        isBouncing = false;
+        //    }
+        //}
     }
 
     void CornerCorrect(float YVelocity)
@@ -362,7 +379,6 @@ public class PlayerMovement1 : MonoBehaviour
         appliedMovement.x = appliedMovement.x / cutXMomentumDivider;
         appliedMovement.y = appliedMovement.y / cutYMomentumDivider;
         hasArrived = true;
-        Debug.Log("HAS ARRIVED");
         _isDashing = false;
 
 
@@ -479,6 +495,7 @@ public class PlayerMovement1 : MonoBehaviour
         hasArrived = false;
         cntPlusDashTime = 0.0f;
         isPlusDamage = false;
+        isBouncing = true;
 
         appliedMovement = Vector3.zero;
         appliedMovement = bounceDir;
@@ -535,7 +552,6 @@ public class PlayerMovement1 : MonoBehaviour
         }
     }
 
-
     IEnumerator ReturnCanMove()
     {
         yield return new WaitForSeconds(cdBtwnDashes);
@@ -563,13 +579,11 @@ public class PlayerMovement1 : MonoBehaviour
         if (volume)
         {
             chromaticLerp += Time.deltaTime * 5;
-            volume.SetChromaticAberrationValue(chromaticLerp);
             vignetteLerp += Time.deltaTime * 5;
+            volume.SetChromaticAberrationValue(chromaticLerp);
             volume.SetVignetteValue(vignetteLerp);
         }
 
-
-    
 
         if (!hasLerped)
         {
@@ -584,9 +598,10 @@ public class PlayerMovement1 : MonoBehaviour
             }
         }
 
+        StaminaUIController();
         if(cntBulletTime < bulletTime)
         {
-            cntBulletTime += Time.deltaTime * 10;
+            cntBulletTime += Time.deltaTime * bulletTimeMultiplier;
         }
         else
         {
@@ -595,7 +610,6 @@ public class PlayerMovement1 : MonoBehaviour
 
         float percent = MyMaths.CalculatePercentage(bulletTime, cntBulletTime);
         onStayBulletTime?.Invoke(percent);
-        StaminaUIController();
     }
 
     void StaminaUIController()
@@ -612,7 +626,7 @@ public class PlayerMovement1 : MonoBehaviour
     {
         if (volume)
         {
-            volume.ResetValues();
+            volume.ResetValuesForDash();
         }
         chromaticLerp = 0.0f;
         vignetteLerp = 0.0f;

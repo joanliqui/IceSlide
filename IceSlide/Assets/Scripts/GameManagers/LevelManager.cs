@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour
     private int totalEnemies;
     private static LevelManager instance;
     public UnityEvent onLevelComplete;
+    public UnityEvent onTimeEnded;
     
     [Scene, SerializeField] string nextLevel;
 
@@ -38,6 +39,7 @@ public class LevelManager : MonoBehaviour
         {
             totalEnemies++;
         }
+
         if(nextLevel != string.Empty)
             onLevelComplete.AddListener(LoadNextLevel);
     }

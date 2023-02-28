@@ -2,20 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class PlayerLife : MonoBehaviour
 {
-    PlayerMovement1 player;
-    SpriteRenderer sr;
+    [SerializeField] GameObject deadParticlePrefab;
+    public UnityEvent onPlayerDead;
+
+    #region Component References
+    private PlayerMovement1 player;
+    private SpriteRenderer sr;
+    private Collider2D col;
+    private Rigidbody2D rb;
+    [SerializeField] GameObject playerArrow;
+    #endregion
+
 
     private void Start()
     {
         player = GetComponent<PlayerMovement1>();
         sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
     public void PlayerDead()
     {
-        sr.color = Color.black;
+        sr.enabled = false;
+        col.enabled = false;
+        rb.isKinematic = true;
+        playerArrow.SetActive(false);
+
+        GameObject deadParticle = Instantiate(deadParticlePrefab, transform.position,Quaternion.identity);
+        ParticleSystem ps = deadParticle.GetComponent<ParticleSystem>();
+        ps.Play();
+
+        onPlayerDead?.Invoke();
         StartCoroutine(ReloadScene());
     }
 

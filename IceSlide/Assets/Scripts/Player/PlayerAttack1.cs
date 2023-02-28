@@ -26,7 +26,6 @@ public class PlayerAttack1 : MonoBehaviour
             }
             if(collision.transform.TryGetComponent<IBouncingObject>(out IBouncingObject b))
             {
-                Debug.Log("Bounce Pls");
                 Bounce(b.BounceDirection());
             }
         }

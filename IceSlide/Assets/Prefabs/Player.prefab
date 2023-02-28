@@ -786,7 +786,7 @@ MonoBehaviour:
   cutYMomentumDivider: 3
   cutXMomentumDivider: 2.5
   isFalling: 0
-  bulletTime: 1.7
+  bulletTime: 20
   scaleBulletTime: 0.07
   fillImage: {fileID: 1848190767}
   staminaBorder: {fileID: 533899233}
@@ -803,6 +803,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d5d9491e570ce646b67d6cb3bb801d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deadParticlePrefab: {fileID: 6608401275644303769, guid: 615a84c1aeeb1144d991e4cea8f95b8c, type: 3}
+  onPlayerDead:
+    m_PersistentCalls:
+      m_Calls: []
+  playerArrow: {fileID: 491148296545991756}
 --- !u!114 &491148297228014285
 MonoBehaviour:
   m_ObjectHideFlags: 0

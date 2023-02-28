@@ -12,12 +12,14 @@ public class OniEnemy : BaseEnemy
 
     [SerializeField] bool canMove;
     Transform player;
+    PlayerMovement1 playerMovement;
     [SerializeField] int bounceForce = 50;
 
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerMovement = player.GetComponent<PlayerMovement1>();
     }
 
     public override void Damaged()
@@ -31,7 +33,7 @@ public class OniEnemy : BaseEnemy
         {
             bounceDir = new Vector3(-1, 2, 0);
         }
-        player.GetComponent<PlayerMovement1>().BounceOnDash(bounceDir.normalized * bounceForce);
+        playerMovement.BounceOnDash(bounceDir.normalized * bounceForce);
 
         StartCoroutine(VisualDamaged(damagedColor));
 

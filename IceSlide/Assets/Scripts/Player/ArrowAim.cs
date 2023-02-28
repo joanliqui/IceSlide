@@ -78,7 +78,6 @@ public class ArrowAim : MonoBehaviour
     }
     public void SetLineRendererColor(float percent)
     {
-        print(percent);
         if(oneMatBlink == false)
         {
             if(percent > percentageToBlink)
