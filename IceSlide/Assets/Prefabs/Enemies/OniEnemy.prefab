@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2452043162551221599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.58, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.58, y: -0.487, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2452043163327494659}
@@ -179,6 +179,7 @@ MonoBehaviour:
   lifes: 3
   damagedColor: {r: 0.3490566, g: 0, b: 0, a: 1}
   ps: {fileID: 7782332894729254032}
+  enemyType: 0
   movSpeed: 2
   checkerPos: {fileID: 2452043162551221592}
   layer:

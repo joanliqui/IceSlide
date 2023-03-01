@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack1 : MonoBehaviour
 {
@@ -8,12 +11,57 @@ public class PlayerAttack1 : MonoBehaviour
     PlayerLife life;
     SpriteRenderer sr;
 
+    private StateType stateType = StateType.White;
+    private List<StateType> typesList = new List<StateType>();
+    private int cntState = 1;
+    Color stateColor = Color.white;
+
+    public Color StateColor { get => stateColor; set => stateColor = value; }
+
     private void Start()
     {
         player = GetComponent<PlayerMovement1>();
         life = GetComponent<PlayerLife>();
         sr = GetComponent<SpriteRenderer>();
+
+        StateDictionarySO.stateColorDisctionary.ToList().ForEach(pair => 
+        {
+            typesList.Add(pair.Key); 
+        });
+
+        typesList.Remove(StateType.Neutral);
+
+        SetStateType(cntState);
     }
+
+    public void SwapStateTypeByInput(float dir)
+    {
+        if(dir > 0)
+        {
+            cntState++;
+            if(cntState >= typesList.Count)
+            {
+                cntState = 0;
+            }
+        }
+        else
+        {
+            cntState--;
+            if(cntState <= 0)
+            {
+                cntState = typesList.Count - 1;
+            }
+        }
+
+        SetStateType(cntState);
+    }
+    private void SetStateType(int n)
+    {
+        stateType = typesList[n];
+        StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
+        sr.color = stateColor;
+    }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -21,7 +69,7 @@ public class PlayerAttack1 : MonoBehaviour
         {
             if(collision.transform.TryGetComponent<IDamagable>(out IDamagable d))
             {
-                d.Damaged();
+                d.Damaged(stateType);
                 player.IsDashing = false;
             }
             if(collision.transform.TryGetComponent<IBouncingObject>(out IBouncingObject b))

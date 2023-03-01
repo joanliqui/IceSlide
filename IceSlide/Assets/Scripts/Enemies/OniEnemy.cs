@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class OniEnemy : BaseEnemy
 {
+    [Space(10), Header("OniVariables")]
     [SerializeField] float movSpeed = 10f;
     [SerializeField] Transform checkerPos;
     [SerializeField] LayerMask layer;
@@ -22,6 +23,7 @@ public class OniEnemy : BaseEnemy
         playerMovement = player.GetComponent<PlayerMovement1>();
     }
 
+    #region IDamage Interface
     public override void Damaged()
     {
         Vector3 bounceDir;
@@ -41,7 +43,31 @@ public class OniEnemy : BaseEnemy
         if (lifes <= 0)
             Dead();
     }
+    
+    public override void Damaged(StateType type)
+    {
+        
+            Vector3 bounceDir;
+            if (player.position.x > transform.position.x)
+            {
+                bounceDir = new Vector3(1, 2, 0);
+            }
+            else
+            {
+                bounceDir = new Vector3(-1, 2, 0);
+            }
+            playerMovement.BounceOnDash(bounceDir.normalized * bounceForce);
 
+        if (CanBeDamagedByState(type))
+        {
+            lifes--;
+            if (lifes <= 0)
+                Dead();
+            
+            StartCoroutine(VisualDamaged(damagedColor));
+        }
+    }
+    #endregion
     protected override void Dead()
     {
         base.Dead();

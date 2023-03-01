@@ -147,6 +147,16 @@ public class JumperEnemy : BaseEnemy
             Dead();
     }
 
+    public override void Damaged(StateType type)
+    {
+        if (CanBeDamagedByState(type))
+        {
+            lifes--;
+            if (lifes <= 0)
+                Dead();
+        }
+    }
+
     private void OnDrawGizmos()
     {
         if (facingRight)

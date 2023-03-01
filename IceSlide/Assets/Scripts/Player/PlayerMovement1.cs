@@ -12,11 +12,14 @@ public class PlayerMovement1 : MonoBehaviour
     private Controls _inputs;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private PlayerAttack1 playerAttack;
     #endregion
 
     #region Input Handle Variables
     private Vector2 _mousePos;
     private bool _isDashPressed = false;
+    private float _wheelDir;
+    private bool oneWheelSpin = false;
     #endregion
 
     [Header("Checkers")]
@@ -52,8 +55,6 @@ public class PlayerMovement1 : MonoBehaviour
     public bool colTop;
     private bool canCornerCorrect;
 
-
-
     [Header("Dash Variables")]
     [SerializeField] private float _dashSpeed = 15;
     //[SerializeField] private float _dashDuration = 0.5f;
@@ -70,7 +71,7 @@ public class PlayerMovement1 : MonoBehaviour
     private float cntDashTime = 0;
     public float launchTime = 0.09f; //Tiempo en el que no se detecta si esta tocando la pared
     private int startingWallNumber = 0;
-    [SerializeField] Color dashColor;
+    [SerializeField, Tooltip("Actualmente en desuso")] Color dashColor;
     [SerializeField] float plusDashTime = 0.3f;
     private float cntPlusDashTime;
     private bool isPlusDamage;
@@ -106,14 +107,16 @@ public class PlayerMovement1 : MonoBehaviour
     [Range(0.0f, 1.0f)]
     [Tooltip("Suele estar en 0.1")]
     [SerializeField] float scaleBulletTime = 0.1f;
-    float cntBulletTime = 0;
+
+    private float cntBulletTime = 0;
+    private float chromaticLerp;
+    private float vignetteLerp;
     private const int bulletTimeMultiplier = 100;
-    bool isBulletTime = false;
-    bool hasLerped = false;
-    public bool isBouncing = false;
-    PostProcessingHandler volume;
-    float chromaticLerp;
-    float vignetteLerp;
+    private bool isBulletTime = false;
+    private bool hasLerped = false;
+    private bool isBouncing = false;
+    private PostProcessingHandler volume;
+
     [Header("Stamina UI")]
     [SerializeField] Image fillImage;
     [SerializeField] GameObject staminaBorder;
@@ -145,6 +148,8 @@ public class PlayerMovement1 : MonoBehaviour
         col = GetComponent<Collider2D>();
         cam = Camera.main;
         sr = GetComponent<SpriteRenderer>();
+        playerAttack = GetComponent<PlayerAttack1>();
+
         chromaticLerp = 0;
         vignetteLerp = 0;
 
@@ -154,6 +159,18 @@ public class PlayerMovement1 : MonoBehaviour
         _inputs.Player.Dash.canceled += ctx => _isDashPressed = false;
         _inputs.Player.Attack.started += EnterBulletTime;
         _inputs.Player.Attack.canceled += ExitBulletTime;
+        _inputs.Player.SwapState.started += ctx =>
+        {
+            if (!oneWheelSpin)
+            {
+                ReadWheel(ctx);
+                oneWheelSpin = true;
+            }
+        };
+        _inputs.Player.SwapState.canceled += ctx => 
+        {
+            oneWheelSpin = false;
+        } ;
 
         currentMovement = Vector3.zero;
         appliedMovement = Vector3.zero;
@@ -163,6 +180,11 @@ public class PlayerMovement1 : MonoBehaviour
         volume = GameObject.FindGameObjectWithTag("PostProcessing").GetComponent<PostProcessingHandler>();
     }
 
+    private void ReadWheel(InputAction.CallbackContext obj)
+    {
+        _wheelDir = obj.ReadValue<float>();
+        playerAttack.SwapStateTypeByInput(_wheelDir);
+    }
 
     private void ReadMousePosition(InputAction.CallbackContext obj)
     {
@@ -206,9 +228,9 @@ public class PlayerMovement1 : MonoBehaviour
 
         if (!_isDashing && !isPlusDamage)
         {
-            if (sr.color != Color.white)
+            if (sr.color != playerAttack.StateColor)
             {
-                sr.color = Color.white;
+                sr.color = playerAttack.StateColor;
             }
         }
 
@@ -364,7 +386,7 @@ public class PlayerMovement1 : MonoBehaviour
             cntPlusDashTime = 0.0f;
             isPlusDamage = false;
 
-            sr.color = dashColor;
+            //sr.color = dashColor;
             //ripple.Emit();
 
             IsTouchingWallWhenDash();

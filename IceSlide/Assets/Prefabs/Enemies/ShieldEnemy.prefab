@@ -5309,8 +5309,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifes: 1
-  damagedColor: {r: 0, g: 0, b: 0, a: 0}
+  damagedColor: {r: 0.34901962, g: 0, b: 0, a: 1}
   ps: {fileID: 454085592338626540}
+  enemyType: 0
   movSpeed: -1
   checkerPos: {fileID: 810222372826926916}
   layer:

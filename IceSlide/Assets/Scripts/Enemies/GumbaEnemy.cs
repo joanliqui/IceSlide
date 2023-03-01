@@ -20,6 +20,15 @@ public class GumbaEnemy : BaseEnemy
         if(lifes <= 0)
             Dead();
     }
+    public override void Damaged(StateType type)
+    {
+        if (CanBeDamagedByState(type))
+        {
+            lifes--;
+            if (lifes <= 0)
+                Dead();
+        }
+    }
 
     protected override void Dead()
     {

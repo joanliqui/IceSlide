@@ -71,6 +71,19 @@ public class ShieldEnemy : BaseEnemy
         }
     }
 
+    public override void Damaged(StateType type)
+    {
+        if (CanBeDamagedByState(type))
+        {
+            if (!facingRight && player.position.x > transform.position.x || facingRight && player.position.x < transform.position.x)
+            {
+                lifes--;
+                if (lifes <= 0)
+                    Dead();
+            }
+        }
+    }
+
     protected override void Dead()
     {
         base.Dead();
