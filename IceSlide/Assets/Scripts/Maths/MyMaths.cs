@@ -29,4 +29,10 @@ public static class MyMaths
     {
         return (smallNumber / bigNumber) * 100;
     }
+
+    public static Vector2 DirectionFromAngle(float angleInDegrees, Transform trans)
+    {
+        angleInDegrees -= trans.eulerAngles.z;
+        return new Vector2(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+    }
 }

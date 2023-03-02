@@ -427,11 +427,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91518774}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2100556973}
+  m_Father: {fileID: 824605945}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &91518776
@@ -1459,6 +1459,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 347636137}
+  - {fileID: 91518775}
   m_Father: {fileID: 2100556973}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1631,6 +1632,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 83676696, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 83676696, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 525295554, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: m_UseWorldSpace
       value: 0
@@ -1953,7 +1962,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 824605945}
-  - {fileID: 91518775}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1977,7 +1985,9 @@ MonoBehaviour:
   socket: {fileID: 347636137}
   rotationSpeed: 20
   timeBtwShots: 5
-  maxViewRange: 11.8
+  maxViewRange: 6.9
+  clampRotation: 0
+  maxRotationAngle: 45
   collisionLayer:
     serializedVersion: 2
     m_Bits: 192

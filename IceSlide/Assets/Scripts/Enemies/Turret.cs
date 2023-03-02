@@ -20,6 +20,8 @@ public class Turret : BaseEnemy
     [SerializeField] float rotationSpeed = 10f;
     [SerializeField] float timeBtwShots = 1;
     [SerializeField] float maxViewRange = 10f;
+    [SerializeField] bool clampRotation = false;
+    [SerializeField] float maxRotationAngle = 25f;
     [SerializeField] LayerMask collisionLayer;
 
     private float cntTimeBtwShots = 0;
@@ -30,11 +32,14 @@ public class Turret : BaseEnemy
     private RaycastHit2D hit;
     private LineRenderer line;
 
-    public Transform Eje { get => eje;  }
-    public LineRenderer Line { get => line; }
-    public float RotationSpeed { get => rotationSpeed; set => rotationSpeed = value; }
-    public bool InRange { get => inRange; set => inRange = value; }
-
+    #region PROPERTIES
+    public Transform Eje { get => eje;}
+    public LineRenderer Line { get => line;}
+    public float RotationSpeed { get => rotationSpeed;}
+    public bool InRange { get => inRange;}
+    public float MaxViewRange { get => maxViewRange; set => maxViewRange = value; }
+    public float MaxRotationAngle { get => maxRotationAngle; set => maxRotationAngle = value; }
+    #endregion
     void Start()
     {
         if (pool == null)
@@ -43,7 +48,9 @@ public class Turret : BaseEnemy
         player = GameObject.FindGameObjectWithTag("Player").transform;
         line = GetComponentInChildren<LineRenderer>();
         line.useWorldSpace = true;
-        
+
+        rotZ = eje.transform.localEulerAngles.z;
+
     }
 
     private void Update()
@@ -86,10 +93,34 @@ public class Turret : BaseEnemy
         }
         
     }
-
+    int dirRot = 1;
+    float rotZ;
     private void IdleMovement()
     {
-        eje.Rotate(eje.forward, Time.deltaTime * rotationSpeed);
+        if (clampRotation)
+        {
+            if (dirRot > 0)
+            {
+                if(rotZ > maxRotationAngle)
+                {
+                    dirRot *= -1;
+                }
+            }
+            else
+            {
+                if (rotZ >= 360)
+                    rotZ -= 360;
+                Debug.Log(rotZ);
+                if(rotZ < -maxRotationAngle)
+                {
+                    dirRot *= -1;
+                }
+            }
+        }
+        rotZ += Time.deltaTime * dirRot * rotationSpeed;
+        eje.localRotation = Quaternion.Euler(0, 0, rotZ);
+        //eje.Rotate(eje.forward, Time.deltaTime * rotationSpeed * dirRot);
+
     }
 
     private void AimHandler()
@@ -108,8 +139,4 @@ public class Turret : BaseEnemy
         bullet.SetActive(true);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, maxViewRange);
-    }
 }
