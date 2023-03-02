@@ -24,6 +24,9 @@ public class ArrowAim : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
+        if (line)
+            line.useWorldSpace = true;
+
         arrow = transform.GetChild(0);
         originalArrowPos = arrow.localPosition;
         mat = line.material;

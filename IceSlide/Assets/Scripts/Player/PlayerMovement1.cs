@@ -165,12 +165,9 @@ public class PlayerMovement1 : MonoBehaviour
             {
                 ReadWheel(ctx);
                 oneWheelSpin = true;
+                StartCoroutine(ReturnWheelAgain());
             }
         };
-        _inputs.Player.SwapState.canceled += ctx => 
-        {
-            oneWheelSpin = false;
-        } ;
 
         currentMovement = Vector3.zero;
         appliedMovement = Vector3.zero;
@@ -200,7 +197,6 @@ public class PlayerMovement1 : MonoBehaviour
                 {
                     appliedMovement.y = 0f;
                     isBouncing = false;
-                    Debug.Log("Cut Y Movement");
                 }
             }
             if (isGrounded || _isDashing)
@@ -656,6 +652,12 @@ public class PlayerMovement1 : MonoBehaviour
         isBulletTime = false;
         hasLerped = false;
         Time.timeScale = 1f;
+    }
+
+    private IEnumerator ReturnWheelAgain()
+    {
+        yield return new WaitForSeconds(0.2f);
+        oneWheelSpin = false;
     }
 
     private void OnDrawGizmos()

@@ -47,7 +47,7 @@ public class PlayerAttack1 : MonoBehaviour
         else
         {
             cntState--;
-            if(cntState <= 0)
+            if(cntState < 0)
             {
                 cntState = typesList.Count - 1;
             }

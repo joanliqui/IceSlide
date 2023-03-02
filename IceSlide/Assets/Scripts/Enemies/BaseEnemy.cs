@@ -17,7 +17,8 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
         baseColor = enemyColor;
 
         //He de conseguir hacer una tool para cambiar el color al cambiar el enum desde el inspector ---------> TO DO
-        sr.color = enemyColor;
+        if(sr)
+            sr.color = enemyColor;
     }
     #region IDamaged Interface
     public virtual void Damaged()
