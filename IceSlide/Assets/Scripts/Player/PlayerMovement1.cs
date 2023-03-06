@@ -234,7 +234,8 @@ public class PlayerMovement1 : MonoBehaviour
             }
         }
 
-        if (canCornerCorrect) CornerCorrect(appliedMovement.y);
+        if (canCornerCorrect) 
+            CornerCorrect(appliedMovement.y);
 
     }
     private void FixedUpdate()
@@ -257,22 +258,26 @@ public class PlayerMovement1 : MonoBehaviour
         else isGrounded = false;
         #endregion
 
-        #region CheckTop
-        bool outerLeft = Physics2D.Raycast(transform.position - _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
-        bool innerLeft = Physics2D.Raycast(transform.position - _innerRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
-        bool innerRight = Physics2D.Raycast(transform.position + _innerRaycastOffset , Vector2.up, _topRaycastLenght, groundMask);
-        bool outerRight = Physics2D.Raycast(transform.position + _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
+        #region CheckTopForCornerCorrection
+        bool topOuterLeft = Physics2D.Raycast(transform.position - _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
+        bool topInnerLeft = Physics2D.Raycast(transform.position - _innerRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
+        bool topInnerRight = Physics2D.Raycast(transform.position + _innerRaycastOffset , Vector2.up, _topRaycastLenght, groundMask);
+        bool topOuterRight = Physics2D.Raycast(transform.position + _edgeRaycastOffset, Vector2.up, _topRaycastLenght, groundMask);
 
-        if (outerRight && !innerRight || outerLeft && !innerLeft)
+        if (topOuterRight && !topInnerRight || topOuterLeft && !topInnerLeft)
         {
-            canCornerCorrect = true;
+            if(appliedMovement.y > 0)
+            {
+                canCornerCorrect = true;
+                return;
+            }
         }
         else
         {
             canCornerCorrect = false;
         }
 
-        if(outerLeft && innerLeft || outerRight && innerRight)
+        if(topOuterLeft && topInnerLeft || topOuterRight && topInnerRight)
         {
             colTop = true;
         }
@@ -282,7 +287,27 @@ public class PlayerMovement1 : MonoBehaviour
         }
 
         #endregion
-        
+        #region CheckDownForCornerCorrection
+        bool downOuterLeft = Physics2D.Raycast(transform.position - _edgeRaycastOffset, Vector2.down, _topRaycastLenght, groundMask);
+        bool downInnerLeft = Physics2D.Raycast(transform.position - _innerRaycastOffset, Vector2.down, _topRaycastLenght, groundMask);
+        bool downInnerRight = Physics2D.Raycast(transform.position + _innerRaycastOffset, Vector2.down, _topRaycastLenght, groundMask);
+        bool downOuterRight = Physics2D.Raycast(transform.position + _edgeRaycastOffset, Vector2.down, _topRaycastLenght, groundMask);
+
+        if (downOuterRight && !downInnerRight || downOuterLeft && !downInnerLeft)
+        {
+            if(appliedMovement.y < 0)
+            {
+                canCornerCorrect = true;
+                return;
+            }
+        }
+        else
+        {
+            canCornerCorrect = false;
+        }
+
+        #endregion
+
         #region CheckLeft
         lCenterPos = new Vector2(col.bounds.min.x, col.bounds.center.y);
         lLeftPos = col.bounds.min;
@@ -314,6 +339,7 @@ public class PlayerMovement1 : MonoBehaviour
 
     void CornerCorrect(float YVelocity)
     {
+        #region TOP RAYCASTS
         //Push player to the right
         RaycastHit2D hit = Physics2D.Raycast(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.left, _topRaycastLenght, groundMask);
         if(hit.collider != null)
@@ -321,8 +347,8 @@ public class PlayerMovement1 : MonoBehaviour
             float _newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.up * _topRaycastLenght,
                                             transform.position - _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
            
-            transform.position = new Vector3(transform.position.x + _newPos + 0.1f , transform.position.y, transform.position.z);
-            Debug.Log("CornerCorrection To Right!");
+            transform.position = new Vector3(transform.position.x + _newPos + 0.05f , transform.position.y, transform.position.z);
+            Debug.Log("TOP CornerCorrection To Right!");
 
             startingWallNumber = 3;
             appliedMovement.y = YVelocity;
@@ -334,11 +360,42 @@ public class PlayerMovement1 : MonoBehaviour
             float newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.up * _topRaycastLenght,
                                             transform.position + _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
 
-            transform.position = new Vector3(transform.position.x - newPos - 0.1f, transform.position.y, transform.position.z);
-            Debug.Log("CornerCorrection To Left!");
+            transform.position = new Vector3(transform.position.x - newPos - 0.05f, transform.position.y, transform.position.z);
+            Debug.Log("TOP CornerCorrection To Left!");
             startingWallNumber = 2;
             appliedMovement.y = YVelocity;
         }
+        #endregion
+
+        #region DOWN RAYCAST
+        //Push player to the right
+        hit = Physics2D.Raycast(transform.position - _innerRaycastOffset + Vector3.down * _topRaycastLenght, Vector3.left, _topRaycastLenght, groundMask);
+        if (hit.collider != null)
+        {
+            float _newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.down * _topRaycastLenght,
+                                            transform.position - _edgeRaycastOffset + Vector3.down * _topRaycastLenght);
+
+            transform.position = new Vector3(transform.position.x + _newPos + 0.05f, transform.position.y, transform.position.z);
+            Debug.Log("DOWN CornerCorrection To Right!");
+
+            //startingWallNumber = 3;
+            appliedMovement.y = YVelocity;
+        }
+
+        // Push player to the left
+        hit = Physics2D.Raycast(transform.position + _innerRaycastOffset + Vector3.down * _topRaycastLenght, Vector3.right, _topRaycastLenght, groundMask);
+        if (hit.collider != null)
+        {
+            float newPos = Vector3.Distance(new Vector3(hit.point.x, transform.position.y, 0f) + Vector3.down * _topRaycastLenght,
+                                            transform.position + _edgeRaycastOffset + Vector3.down * _topRaycastLenght);
+
+            transform.position = new Vector3(transform.position.x - newPos - 0.05f, transform.position.y, transform.position.z);
+            Debug.Log("DOWN CornerCorrection To Left!");
+
+            //startingWallNumber = 2;
+            appliedMovement.y = YVelocity;
+        }
+        #endregion
     }
     private void HandleRotation()
     {
@@ -682,7 +739,7 @@ public class PlayerMovement1 : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        #region WallsDetectors
+        #region WallDetectors
         Gizmos.color = Color.green;
         //Down
         Gizmos.DrawLine(dCenterPos, new Vector2(dCenterPos.x, dCenterPos.y - lenghtRay));
@@ -700,7 +757,7 @@ public class PlayerMovement1 : MonoBehaviour
         Gizmos.DrawLine(rRightPos, new Vector2(rRightPos.x + lenghtRay, rRightPos.y));
         #endregion
 
-        #region CornerCorrectionDetetors
+        #region CornerCorrectionDetectors
         //Top
         //Corner Check
         Gizmos.color = Color.red;
@@ -709,6 +766,7 @@ public class PlayerMovement1 : MonoBehaviour
 
         Gizmos.DrawLine(transform.position + _innerRaycastOffset, transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght);
         Gizmos.DrawLine(transform.position + _edgeRaycastOffset, transform.position + _edgeRaycastOffset + Vector3.up * _topRaycastLenght);
+
         //CornerDistance Check
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght,
@@ -716,6 +774,23 @@ public class PlayerMovement1 : MonoBehaviour
 
         Gizmos.DrawLine(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght,
                         transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.right * _topRaycastLenght);
+
+        //DOWN
+        //Corner Check
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position - _edgeRaycastOffset, transform.position - _edgeRaycastOffset + Vector3.down * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position - _innerRaycastOffset, transform.position - _innerRaycastOffset + Vector3.down * _topRaycastLenght);
+
+        Gizmos.DrawLine(transform.position + _innerRaycastOffset, transform.position + _innerRaycastOffset + Vector3.down * _topRaycastLenght);
+        Gizmos.DrawLine(transform.position + _edgeRaycastOffset, transform.position + _edgeRaycastOffset + Vector3.down * _topRaycastLenght);
+
+        //CornerDistance Check
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position - _innerRaycastOffset + Vector3.down * _topRaycastLenght,
+                        transform.position - _innerRaycastOffset + Vector3.down * _topRaycastLenght + Vector3.left * _topRaycastLenght);
+
+        Gizmos.DrawLine(transform.position + _innerRaycastOffset + Vector3.down * _topRaycastLenght,
+                       transform.position + _innerRaycastOffset + Vector3.down * _topRaycastLenght + Vector3.right * _topRaycastLenght);
         #endregion
 
         #region DownArc
