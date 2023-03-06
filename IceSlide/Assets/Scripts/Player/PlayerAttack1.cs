@@ -94,7 +94,7 @@ public class PlayerAttack1 : MonoBehaviour
             {
                 if (collision.transform.TryGetComponent<IDamagable>(out IDamagable d))
                 {
-                    Debug.Log("·asasdasd");
+                    Debug.Log("Collision Stay Damage Call");
                     d.Damaged(stateType);
                 }
             }
