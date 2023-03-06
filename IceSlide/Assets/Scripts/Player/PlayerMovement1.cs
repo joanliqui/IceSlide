@@ -160,15 +160,15 @@ public class PlayerMovement1 : MonoBehaviour
         _inputs.Player.Dash.canceled += ctx => _isDashPressed = false;
         _inputs.Player.Attack.started += EnterBulletTime;
         _inputs.Player.Attack.canceled += ExitBulletTime;
-        _inputs.Player.SwapState.started += ctx =>
-        {
-            if (!oneWheelSpin)
-            {
-                ReadWheel(ctx);
-                oneWheelSpin = true;
-                StartCoroutine(ReturnWheelAgain());
-            }
-        };
+        //_inputs.Player.SwapState.started += ctx =>
+        //{
+        //    if (!oneWheelSpin)
+        //    {
+        //        ReadWheel(ctx);
+        //        oneWheelSpin = true;
+        //        StartCoroutine(ReturnWheelAgain());
+        //    }
+        //};
 
         currentMovement = Vector3.zero;
         appliedMovement = Vector3.zero;

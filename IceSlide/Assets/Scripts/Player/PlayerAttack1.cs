@@ -18,6 +18,8 @@ public class PlayerAttack1 : MonoBehaviour
 
     public Color StateColor { get => stateColor; set => stateColor = value; }
 
+
+
     private void Start()
     {
         player = GetComponent<PlayerMovement1>();
@@ -55,13 +57,18 @@ public class PlayerAttack1 : MonoBehaviour
 
         SetStateType(cntState);
     }
-    private void SetStateType(int n)
+    public void SetStateType(int n)
     {
         stateType = typesList[n];
         StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
         sr.color = stateColor;
     }
-
+    public void SetStateType(StateType state)
+    {
+        stateType = state;
+        StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
+        sr.color = stateColor;
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
