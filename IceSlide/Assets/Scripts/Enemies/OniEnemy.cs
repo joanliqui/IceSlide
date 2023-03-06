@@ -16,11 +16,14 @@ public class OniEnemy : BaseEnemy
     PlayerMovement1 playerMovement;
     [SerializeField] int bounceForce = 50;
 
+    EnemyAudioHandler audioHandler;
+
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerMovement = player.GetComponent<PlayerMovement1>();
+        audioHandler = GetComponentInChildren<EnemyAudioHandler>();
     }
 
     #region IDamage Interface
@@ -61,6 +64,7 @@ public class OniEnemy : BaseEnemy
         if (CanBeDamagedByState(type))
         {
             lifes--;
+            onDamaged?.Invoke();
             if (lifes <= 0)
                 Dead();
             

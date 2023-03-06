@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 public abstract class BaseEnemy : MonoBehaviour, IDamagable
 {
     [SerializeField] protected int lifes = 1;
@@ -10,6 +11,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
     [SerializeField] protected ParticleSystem ps;
     [SerializeField] protected StateType enemyType = StateType.Neutral;
     Color enemyColor;
+    [SerializeField] protected UnityEvent onDamaged;
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();

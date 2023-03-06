@@ -8,7 +8,6 @@ public class PlayerSoundsManager : MonoBehaviour
     PlayerMovement1 player;
     [SerializeField] AudioMixerSnapshot normalSnapshot;
     [SerializeField] AudioMixerSnapshot attackSnapshot;
-    [SerializeField] AudioMixer mixer;
     void Awake()
     {
         player = GetComponent<PlayerMovement1>();

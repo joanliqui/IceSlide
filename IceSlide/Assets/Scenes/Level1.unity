@@ -1633,7 +1633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014287, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.764
+      value: -12.36
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014287, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1764,22 +1764,6 @@ PrefabInstance:
     - target: {fileID: 2452043163327494662, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
       propertyPath: m_Name
       value: OniEnemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 2452043163327494662, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2452043163327494669, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
-      propertyPath: lifes
-      value: 222
-      objectReference: {fileID: 0}
-    - target: {fileID: 2452043163327494669, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
-      propertyPath: movSpeed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2452043163327494669, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
-      propertyPath: enemyType
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
