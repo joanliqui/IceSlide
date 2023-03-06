@@ -91,6 +91,10 @@ public class PlayerMovement1 : MonoBehaviour
     [SerializeField] float cutXMomentumDivider = 2.5f;
     public bool isFalling;
 
+    [Header("WallSlide Variables")]
+    [SerializeField] float wallSlideVelocity;
+    bool isWallSliding = false;
+
     [Header("Bullet Time")]
     [SerializeField] float bulletTime = 1f;
 
@@ -193,6 +197,10 @@ public class PlayerMovement1 : MonoBehaviour
 
         CheckEnvironment();
         HandleRotation();
+        //CanWallSlide();
+
+        if (canCornerCorrect)
+            CornerCorrect(appliedMovement.y);
 
         if (isBouncing)
         {
@@ -211,7 +219,6 @@ public class PlayerMovement1 : MonoBehaviour
         }
 
 
-
         if (_isDashing) Dash();
  
         if (isPlusDamage) PlusDamageDash();
@@ -222,24 +229,16 @@ public class PlayerMovement1 : MonoBehaviour
             if(staminaBorder.activeInHierarchy)
                 staminaBorder.SetActive(false);
         }
-
-
+        
         if (useGravity) HandleGravity();
 
-        if (!_isDashing && !isPlusDamage)
-        {
-            if (sr.color != playerAttack.StateColor)
-            {
-                sr.color = playerAttack.StateColor;
-            }
-        }
+    //    if (isWallSliding) WallSlide();
 
-        if (canCornerCorrect) 
-            CornerCorrect(appliedMovement.y);
 
     }
     private void FixedUpdate()
     {
+    
         rb.velocity = appliedMovement;
     }
 
@@ -337,6 +336,28 @@ public class PlayerMovement1 : MonoBehaviour
 
     }
 
+    void CanWallSlide()
+    {
+        if (!isGrounded)
+        {
+            if (colLeft || colRight)
+            {
+                if (appliedMovement.y < 0.0f && !_isDashing)
+                {
+                    isWallSliding = true;
+                    return;
+                }
+            }
+        }
+        isWallSliding = false;
+    }
+
+    void WallSlide()
+    {
+        Debug.Log("Is Wallsliding");
+        appliedMovement.y = -wallSlideVelocity;
+    }
+
     void CornerCorrect(float YVelocity)
     {
         #region TOP RAYCASTS
@@ -351,7 +372,7 @@ public class PlayerMovement1 : MonoBehaviour
             Debug.Log("TOP CornerCorrection To Right!");
 
             startingWallNumber = 3;
-            appliedMovement.y = YVelocity;
+            //appliedMovement.y = YVelocity;
         }
         //Push player to the left
         hit = Physics2D.Raycast(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.right, _topRaycastLenght, groundMask);
@@ -363,7 +384,7 @@ public class PlayerMovement1 : MonoBehaviour
             transform.position = new Vector3(transform.position.x - newPos - 0.05f, transform.position.y, transform.position.z);
             Debug.Log("TOP CornerCorrection To Left!");
             startingWallNumber = 2;
-            appliedMovement.y = YVelocity;
+            //appliedMovement.y = YVelocity;
         }
         #endregion
 
@@ -379,7 +400,7 @@ public class PlayerMovement1 : MonoBehaviour
             Debug.Log("DOWN CornerCorrection To Right!");
 
             //startingWallNumber = 3;
-            appliedMovement.y = YVelocity;
+            //appliedMovement.y = YVelocity;
         }
 
         // Push player to the left
@@ -393,7 +414,7 @@ public class PlayerMovement1 : MonoBehaviour
             Debug.Log("DOWN CornerCorrection To Left!");
 
             //startingWallNumber = 2;
-            appliedMovement.y = YVelocity;
+            //appliedMovement.y = YVelocity;
         }
         #endregion
     }
@@ -428,11 +449,11 @@ public class PlayerMovement1 : MonoBehaviour
             startingWallNumber = 0;
             cntDashTime = 0;
 
-            hasArrived = false;
             _isDashing = true;
+            hasArrived = false;
             canDash = false;
-            cntPlusDashTime = 0.0f;
             isPlusDamage = false;
+            cntPlusDashTime = 0.0f;
 
             //sr.color = dashColor;
             //ripple.Emit();
@@ -529,19 +550,22 @@ public class PlayerMovement1 : MonoBehaviour
             }
             if (colLeft && appliedMovement.x < 0.0f && !CanDashOnWallCauseAngle(180, 180))
             {
+                Debug.Log("Col Left + CantDashAngle 180");
                 _isDashing = false;
                 hasArrived = true;
                 appliedMovement.x = 0.0f;
-                appliedMovement.y /= cutYMomentumDivider;
+                //appliedMovement.y /= cutYMomentumDivider;
                 isPlusDamage = true;
 
             }
             if(colRight && appliedMovement.x > 0.0f && !CanDashOnWallCauseAngle(0, 360))
             {
+                Debug.Log("Col right + CantDashAngle 360");
+
                 _isDashing = false;
                 hasArrived = true;
                 appliedMovement.x = 0.0f;
-                appliedMovement.y /= cutYMomentumDivider;
+                //appliedMovement.y /= cutYMomentumDivider;
                 isPlusDamage = true;
 
             }
@@ -631,7 +655,7 @@ public class PlayerMovement1 : MonoBehaviour
         //VELOCITY VERLET INTEGRATION: guardamos la velocida anterior, clculamos la siguiente velocidad con el Euler Integration, y los sumamos los dos
         //multiplicado por 0.5 y el Time Step
          isFalling = !isGrounded && !_isDashing;
-        if (!_isDashing)
+        if (!_isDashing && !isWallSliding)
         {
             if (isGrounded)
             {

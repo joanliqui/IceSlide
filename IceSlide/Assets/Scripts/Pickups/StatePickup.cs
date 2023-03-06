@@ -30,6 +30,13 @@ public class StatePickup : MonoBehaviour, IPickeable
         if (collision.CompareTag("Player"))
         {
             Pick();
+            Deactivate();
         }
+    }
+
+    private void Deactivate()
+    {
+        sr.enabled = false;
+        col.enabled = false;
     }
 }

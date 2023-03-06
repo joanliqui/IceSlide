@@ -825,6 +825,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6001069687240492933, guid: c0fa5ec4505f8e24bb5c6350696c6424, type: 3}
+      propertyPath: m_fontSize
+      value: 111
+      objectReference: {fileID: 0}
+    - target: {fileID: 6001069687240492933, guid: c0fa5ec4505f8e24bb5c6350696c6424, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 405e084e5ae762d4999a27597343a064, type: 2}
+    - target: {fileID: 6001069687240492933, guid: c0fa5ec4505f8e24bb5c6350696c6424, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 111
+      objectReference: {fileID: 0}
+    - target: {fileID: 6001069687240492933, guid: c0fa5ec4505f8e24bb5c6350696c6424, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -5872198317170032116, guid: 405e084e5ae762d4999a27597343a064, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0fa5ec4505f8e24bb5c6350696c6424, type: 3}
 --- !u!114 &329745281 stripped
@@ -1702,6 +1718,14 @@ PrefabInstance:
       value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: wallSlideVelocity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: wallSlideYDivider
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: _edgeRaycastOffset.x
       value: 0.5
       objectReference: {fileID: 0}
@@ -1846,6 +1870,10 @@ PrefabInstance:
     - target: {fileID: 2452043163327494662, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
       propertyPath: m_Name
       value: OniEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 2452043163327494662, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2eafa6e33dd9e6d439ac4a1b784a3067, type: 3}
