@@ -11,14 +11,15 @@ public class TurretEditor : Editor
         Turret turret = (Turret)target;
 
         Handles.color = Color.red;
-        Handles.DrawWireArc(turret.transform.position, Vector3.forward, Vector3.up, 360, turret.MaxViewRange);
+        Handles.DrawWireArc(turret.transform.position, Vector3.forward, Vector3.up, 360, turret.LowViewRange);
+        Handles.DrawWireArc(turret.transform.position, Vector3.forward, Vector3.up, 360, turret.BigViewRange);
 
         Handles.color = Color.yellow;
 
         Vector3 angleA = MyMaths.DirectionFromAngle(turret.MaxRotationAngle, turret.transform);
         Vector3 angleB = MyMaths.DirectionFromAngle(-turret.MaxRotationAngle, turret.transform);
 
-        Handles.DrawLine(turret.transform.position, turret.transform.position + angleA * turret.MaxViewRange);
-        Handles.DrawLine(turret.transform.position, turret.transform.position + angleB * turret.MaxViewRange);
+        Handles.DrawLine(turret.transform.position, turret.transform.position + angleA * turret.LowViewRange);
+        Handles.DrawLine(turret.transform.position, turret.transform.position + angleB * turret.LowViewRange);
     }
 }

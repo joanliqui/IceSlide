@@ -18,8 +18,8 @@ public class PlayerMovement1 : MonoBehaviour
     #region Input Handle Variables
     private Vector2 _mousePos;
     private bool _isDashPressed = false;
-    private float _wheelDir;
     private bool oneWheelSpin = false;
+    private float _wheelDir;
     #endregion
 
     [Header("Checkers")]
@@ -27,19 +27,19 @@ public class PlayerMovement1 : MonoBehaviour
     [SerializeField] LayerMask groundMask;
     Collider2D col;
 
-    Vector2 dCenterPos;
-    Vector2 dLeftPos;
-    Vector2 dRightPos;
+    [NonSerialized]Vector2 dCenterPos;
+    [NonSerialized] Vector2 dLeftPos;
+    [NonSerialized] Vector2 dRightPos;
     public bool isGrounded;
 
-    Vector2 lCenterPos;
-    Vector2 lLeftPos;
-    Vector2 lRightPos;
+    [NonSerialized] Vector2 lCenterPos;
+    [NonSerialized] Vector2 lLeftPos;
+    [NonSerialized] Vector2 lRightPos;
     public bool colLeft;
 
-    Vector2 rCenterPos;
-    Vector2 rLeftPos;
-    Vector2 rRightPos;
+    [NonSerialized] Vector2 rCenterPos;
+    [NonSerialized] Vector2 rLeftPos;
+    [NonSerialized] Vector2 rRightPos;
     public bool colRight;
 
     [Header("Corner Correction Variables")]
@@ -47,10 +47,10 @@ public class PlayerMovement1 : MonoBehaviour
     [SerializeField] private Vector3 _edgeRaycastOffset;
     [SerializeField] private Vector3 _innerRaycastOffset;
 
-    Vector2 tInnerLeftPos;
-    Vector2 tOuterLeftPos;
-    Vector2 tInnerRightPos;
-    Vector2 tOuterRightPos;
+    [NonSerialized] Vector2 tInnerLeftPos;
+    [NonSerialized] Vector2 tOuterLeftPos;
+    [NonSerialized] Vector2 tInnerRightPos;
+    [NonSerialized] Vector2 tOuterRightPos;
 
     public bool colTop;
     private bool canCornerCorrect;
@@ -63,7 +63,10 @@ public class PlayerMovement1 : MonoBehaviour
     public bool hasArrived;
     private bool _isDashing;
     private bool canDash = true;
-    private Vector3 dashPos;
+    private bool isPlusDamage;
+    [SerializeField] float plusDashTime = 0.3f;
+    private float cntPlusDashTime;
+    [NonSerialized] private Vector3 dashPos;
 
     private Vector3 movDir;
     Vector3 currentMovement;
@@ -72,12 +75,9 @@ public class PlayerMovement1 : MonoBehaviour
     public float launchTime = 0.09f; //Tiempo en el que no se detecta si esta tocando la pared
     private int startingWallNumber = 0;
     [SerializeField, Tooltip("Actualmente en desuso")] Color dashColor;
-    [SerializeField] float plusDashTime = 0.3f;
-    private float cntPlusDashTime;
-    private bool isPlusDamage;
     [SerializeField] RippleEffect ripple;
 
-
+    [Range(1, 180), Tooltip("El angulo minimo desde el eje vertical para que el player dashee al pulsar")]
     [SerializeField] private int angleWallNoDash = 20;
 
     //Rotation Variables
@@ -115,6 +115,7 @@ public class PlayerMovement1 : MonoBehaviour
     private bool isBulletTime = false;
     private bool hasLerped = false;
     private bool isBouncing = false;
+    private bool securityBounceFrame = false;
     private PostProcessingHandler volume;
 
     [Header("Stamina UI")]
@@ -189,6 +190,10 @@ public class PlayerMovement1 : MonoBehaviour
     }
     private void Update()
     {
+
+        CheckEnvironment();
+        HandleRotation();
+
         if (isBouncing)
         {
             if(colTop)
@@ -199,14 +204,13 @@ public class PlayerMovement1 : MonoBehaviour
                     isBouncing = false;
                 }
             }
-            if (isGrounded || _isDashing)
+            if (isGrounded|| _isDashing)
             {
                 isBouncing = false;
             }
         }
 
-        CheckEnvironment();
-        HandleRotation();
+
 
         if (_isDashing) Dash();
  
@@ -306,20 +310,11 @@ public class PlayerMovement1 : MonoBehaviour
         else colRight = false;
         #endregion
 
-
-        //if (isBouncing)
-        //{
-        //    if(colLeft || colRight || colTop || isGrounded || isBulletTime || _isDashing)
-        //    {
-        //        isBouncing = false;
-        //    }
-        //}
     }
 
     void CornerCorrect(float YVelocity)
     {
         //Push player to the right
-        Debug.Log("Was Dashing");
         RaycastHit2D hit = Physics2D.Raycast(transform.position - _innerRaycastOffset + Vector3.up * _topRaycastLenght, Vector3.left, _topRaycastLenght, groundMask);
         if(hit.collider != null)
         {
@@ -455,6 +450,7 @@ public class PlayerMovement1 : MonoBehaviour
         {
             ArrivedToObjective();
         }
+        if (securityBounceFrame) return;
 
         if (!hasArrived)
         {
@@ -468,6 +464,7 @@ public class PlayerMovement1 : MonoBehaviour
             if (colTop && appliedMovement.y > 0.0f)
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.y = 0;
                 appliedMovement.x /= 2.5f;
                 isPlusDamage = true;
@@ -476,20 +473,25 @@ public class PlayerMovement1 : MonoBehaviour
             if (colLeft && appliedMovement.x < 0.0f && !CanDashOnWallCauseAngle(180, 180))
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.x = 0.0f;
+                appliedMovement.y /= cutYMomentumDivider;
                 isPlusDamage = true;
 
             }
             if(colRight && appliedMovement.x > 0.0f && !CanDashOnWallCauseAngle(0, 360))
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.x = 0.0f;
+                appliedMovement.y /= cutYMomentumDivider;
                 isPlusDamage = true;
 
             }
             if(isGrounded && appliedMovement.y < 0.0f && !CanDashOnWallCauseAngle(270, 270))
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.y = 0;
                 isPlusDamage = true;
             }
@@ -497,11 +499,13 @@ public class PlayerMovement1 : MonoBehaviour
             if(colLeft && startingWallNumber != 3 && startingWallNumber != 5)
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.x = 0.0f;
             }
             else if(colRight && startingWallNumber != 2 && startingWallNumber != 6)
             {
                 _isDashing = false;
+                hasArrived = true;
                 appliedMovement.x = 0.0f;
             }
         }
@@ -509,7 +513,16 @@ public class PlayerMovement1 : MonoBehaviour
 
     public void BounceOnDash(Vector3 bounceDir)
     {
+        if (isGrounded)
+        {
+            StartCoroutine(SecurityBounceCoroutine());
+        }
+        else
+        {
+            Debug.Log("BounceOnDash Call");
+        }
         _isDashing = false;
+        isGrounded = false;
         hasArrived = false;
         cntPlusDashTime = 0.0f;
         isPlusDamage = false;
@@ -517,6 +530,13 @@ public class PlayerMovement1 : MonoBehaviour
 
         appliedMovement = Vector3.zero;
         appliedMovement = bounceDir;
+        rb.velocity = appliedMovement;
+    }
+    IEnumerator SecurityBounceCoroutine()
+    {
+        securityBounceFrame = true;
+        yield return new WaitForSeconds(0.02f);
+        securityBounceFrame = false;
     }
 
     void IsTouchingWallWhenDash()
@@ -662,12 +682,25 @@ public class PlayerMovement1 : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        #region WallsDetectors
         Gizmos.color = Color.green;
         //Down
         Gizmos.DrawLine(dCenterPos, new Vector2(dCenterPos.x, dCenterPos.y - lenghtRay));
         Gizmos.DrawLine(dLeftPos, new Vector2(dLeftPos.x, dLeftPos.y - lenghtRay));
         Gizmos.DrawLine(dRightPos, new Vector2(dRightPos.x, dRightPos.y - lenghtRay));
 
+        //Left
+        Gizmos.DrawLine(lCenterPos, new Vector2(lCenterPos.x - lenghtRay, lCenterPos.y ));
+        Gizmos.DrawLine(lLeftPos, new Vector2(lLeftPos.x - lenghtRay, lLeftPos.y));
+        Gizmos.DrawLine(lRightPos, new Vector2(lRightPos.x - lenghtRay, lRightPos.y));
+        
+        //Right
+        Gizmos.DrawLine(rCenterPos, new Vector2(rCenterPos.x + lenghtRay, rCenterPos.y));
+        Gizmos.DrawLine(rLeftPos, new Vector2(rLeftPos.x + lenghtRay, rLeftPos.y));
+        Gizmos.DrawLine(rRightPos, new Vector2(rRightPos.x + lenghtRay, rRightPos.y));
+        #endregion
+
+        #region CornerCorrectionDetetors
         //Top
         //Corner Check
         Gizmos.color = Color.red;
@@ -683,24 +716,14 @@ public class PlayerMovement1 : MonoBehaviour
 
         Gizmos.DrawLine(transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght,
                         transform.position + _innerRaycastOffset + Vector3.up * _topRaycastLenght + Vector3.right * _topRaycastLenght);
+        #endregion
 
-        //Gizmos.DrawLine(tCenterPos, new Vector2(tCenterPos.x, tCenterPos.y + lenghtRay));
-        //Gizmos.DrawLine(tLeftPos, new Vector2(tLeftPos.x, tLeftPos.y + lenghtRay));
-        //Gizmos.DrawLine(tRightPos, new Vector2(tRightPos.x, tRightPos.y + lenghtRay));
-
-        //Left
-        Gizmos.DrawLine(lCenterPos, new Vector2(lCenterPos.x - lenghtRay, lCenterPos.y ));
-        Gizmos.DrawLine(lLeftPos, new Vector2(lLeftPos.x - lenghtRay, lLeftPos.y));
-        Gizmos.DrawLine(lRightPos, new Vector2(lRightPos.x - lenghtRay, lRightPos.y));
-        
-        //Right
-        Gizmos.DrawLine(rCenterPos, new Vector2(rCenterPos.x + lenghtRay, rCenterPos.y));
-        Gizmos.DrawLine(rLeftPos, new Vector2(rLeftPos.x + lenghtRay, rLeftPos.y));
-        Gizmos.DrawLine(rRightPos, new Vector2(rRightPos.x + lenghtRay, rRightPos.y));
-
-
-        //Arcs
-        //Gizmos.DrawLine(transform.position, transform.position + )
-
+        #region DownArc
+        Gizmos.color = Color.blue;
+        Vector3 angleA = MyMaths.DirectionFromAngle(angleWallNoDash/2, transform);
+        Vector3 angleB = MyMaths.DirectionFromAngle(-angleWallNoDash/2, transform);
+        Gizmos.DrawLine(transform.position - new Vector3(0f, 0.5f, 0f), transform.position - angleA * 1.5f);
+        Gizmos.DrawLine(transform.position - new Vector3(0f, 0.5f, 0f), transform.position - angleB * 1.5f);
+        #endregion
     }
 }

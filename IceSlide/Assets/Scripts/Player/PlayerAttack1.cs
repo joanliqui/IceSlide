@@ -86,6 +86,20 @@ public class PlayerAttack1 : MonoBehaviour
             }
         }
     }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            if (player.IsDashing)
+            {
+                if (collision.transform.TryGetComponent<IDamagable>(out IDamagable d))
+                {
+                    Debug.Log("·asasdasd");
+                    d.Damaged(stateType);
+                }
+            }
+        }
+    }
 
     private void Bounce(Vector3 bDir)
     {

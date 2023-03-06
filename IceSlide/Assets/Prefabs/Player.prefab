@@ -247,7 +247,7 @@ LineRenderer:
     textureMode: 1
     shadowBias: 0.5
     generateLightingData: 0
-  m_UseWorldSpace: 1
+  m_UseWorldSpace: 0
   m_Loop: 0
 --- !u!1 &533899233
 GameObject:
@@ -607,7 +607,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.17722943, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -700,7 +700,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  m_Color: {r: 0.18396229, g: 0.88294655, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -769,7 +769,7 @@ MonoBehaviour:
   colLeft: 0
   colRight: 0
   _topRaycastLenght: 0.77
-  _edgeRaycastOffset: {x: 0.5, y: 0, z: 0}
+  _edgeRaycastOffset: {x: 0.53, y: 0, z: 0}
   _innerRaycastOffset: {x: 0.21, y: 0, z: 0}
   colTop: 0
   _dashSpeed: 60
@@ -788,7 +788,6 @@ MonoBehaviour:
   isFalling: 0
   bulletTime: 20
   scaleBulletTime: 0.07
-  isBouncing: 0
   fillImage: {fileID: 1848190767}
   staminaBorder: {fileID: 533899233}
   useGravity: 1
