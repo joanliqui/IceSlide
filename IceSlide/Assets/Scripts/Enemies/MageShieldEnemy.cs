@@ -7,7 +7,11 @@ public class MageShieldEnemy : MageEnemy
 {
     private int enemiesToProtect;
     private List<BaseEnemy> enemies = new List<BaseEnemy>();
-    private List<BaseEnemy> shieldEnemies = new List<BaseEnemy>();
+    private List<BaseEnemy> alreadyShielded= new List<BaseEnemy>();
+    private List<BaseEnemy> notYetShielded = new List<BaseEnemy>();
+    private BaseEnemy enemyToShield;
+
+    private List<MagicShield> spawnedShields = new List<MagicShield>();
 
     [SerializeField] GameObject shieldPrefab;
     [SerializeField] float timeShieldActive = 3f;
@@ -18,18 +22,19 @@ public class MageShieldEnemy : MageEnemy
     {
         patrol = GetComponent<PatrolAgent>();
 
-        BaseEnemy[] arr = GameObject.FindObjectsOfType<BaseEnemy>();
-
-        foreach (BaseEnemy item in arr)
+        foreach (BaseEnemy item in LevelManager.Instance.EnemiesInLevel)
         {
             if(item != this)
             {
                 enemies.Add(item);
+                notYetShielded.Add(item);
+                item.onEnemyDead.AddListener(RemoveFromList);
             }
         }
-
         transform.position = patrol.GetNextPoint();
     }
+
+
     void Update()
     {
         Cooldown();
@@ -40,6 +45,16 @@ public class MageShieldEnemy : MageEnemy
         StartCoroutine(MoveCoroutine());
     }
 
+    public void ReturnCooldown()
+    {
+        StartCoroutine(ReturnCooldownCoroutine());
+    }
+
+    IEnumerator ReturnCooldownCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        canCooldown = true;
+    }
     IEnumerator MoveCoroutine()
     {
         yield return new WaitForSeconds(1f);
@@ -50,43 +65,49 @@ public class MageShieldEnemy : MageEnemy
     //Instancia un escudo en la mitad random de los enemigos.
     public override void Sourcery()
     {
-        if (enemies.Count == 0) return;
-
-        if(enemies.Count > 1)
+        if (enemies.Count == 0 || alreadyShielded.Count == enemies.Count) //Si no quedan enemigos o ya estan todos protegidos
         {
-            enemiesToProtect = enemies.Count / 2;
-        }
-        else
-        {
-            enemiesToProtect = 1;
+            canCooldown = false;
+            return; 
         }
 
-        shieldEnemies.Clear();
+        
+        enemiesToProtect = 1;
 
-        while (shieldEnemies.Count != enemiesToProtect)
-        {
-            BaseEnemy b = enemies[Random.Range(0, enemies.Count)];
-            //Si el enemigo no esta ya en la lista, lo añadimos
-            bool f = shieldEnemies.Contains(b);
-            if(!f)
-            {
-                shieldEnemies.Add(b);
-            }
-        }
-        foreach (BaseEnemy item in shieldEnemies)
-        {
-            item.SetEnemyInmortal(true);
-            PlaceShield(item.transform);
-        }
-//        shieldEnemies.ForEach(b => b.SetEnemyInmortal(true));
+        enemyToShield = notYetShielded[Random.Range(0, notYetShielded.Count - 1)];
+        enemyToShield.SetEnemyInmortal(true);
+        PlaceMagicShield(enemyToShield);
+
+        alreadyShielded.Add(enemyToShield);
+        notYetShielded.Remove(enemyToShield);
+
+        //while (notYetShielded.Count != enemiesToProtect)
+        //{
+        //    BaseEnemy b = enemies[Random.Range(0, enemies.Count)];
+        //    //Si el enemigo no esta ya en la lista, lo añadimos
+        //    bool f = placeShieldList.Contains(b);
+        //    if(!f)
+        //    {
+        //        placeShieldList.Add(b);
+        //    }
+        //}
+        //foreach (BaseEnemy item in placeShieldList)
+        //{
+        //    item.SetEnemyInmortal(true);
+        //    PlaceMagicShield(item);
+
+        //    alreadyShielded.Add(item);
+        //    notYetShielded.Remove(item);
+        //}
+
         canCooldown = false;
     }
 
-    public void PlaceShield(Transform p)
+    public void PlaceMagicShield(BaseEnemy p)
     {
         if (!shieldPrefab) return;
 
-        GameObject sh = Instantiate(shieldPrefab, p);
+        GameObject sh = Instantiate(shieldPrefab, p.transform);
         sh.transform.localPosition = Vector3.zero;
 
         Vector3 scale = sh.transform.localScale;
@@ -97,7 +118,28 @@ public class MageShieldEnemy : MageEnemy
 
         if(sh.TryGetComponent<MagicShield>(out MagicShield m))
         {
-            m.SetTimeActive(timeShieldActive);
+            m.SetMagicShield(timeShieldActive, p);
+            spawnedShields.Add(m);
         }
+    }
+
+    public void RemoveFromList(BaseEnemy b)
+    {
+        enemies.Remove(b);
+    }
+
+    protected override void Dead()
+    {
+        foreach (BaseEnemy item in enemies)
+        {
+            if (item != this)
+            {
+                item.onEnemyDead.RemoveListener(RemoveFromList);
+            }
+        }
+        spawnedShields.ForEach(p => Destroy(p.gameObject));
+
+        base.Dead();
+
     }
 }

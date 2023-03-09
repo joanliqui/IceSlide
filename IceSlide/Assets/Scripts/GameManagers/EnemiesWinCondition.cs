@@ -8,14 +8,9 @@ public class EnemiesWinCondition : BaseWinCondition
 
     private void Start()
     {
-        totalEnemies = 0;
-
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (var item in enemies)
-        {
-            totalEnemies++;
-        }
+        totalEnemies = LevelManager.Instance.EnemiesInLevel.Count;
     }
+
     public override void CheckWinCondition()
     {
         totalEnemies--;
@@ -33,10 +28,6 @@ public class EnemiesWinCondition : BaseWinCondition
     public override void StepForWin()
     {
         throw new System.NotImplementedException();
-    }
-    private void DeleteEnemyFromPool()
-    {
-        totalEnemies--;
     }
 
 }

@@ -14,9 +14,12 @@ public class LevelManager : MonoBehaviour
     public UnityEvent onTimeEnded;
     
     [Scene, SerializeField] string nextLevel;
-
-    public static LevelManager Instance { get => instance;}
+    private List<BaseEnemy> enemiesInLevel = new List<BaseEnemy>();
+    
     BaseWinCondition winConditionManager;
+    public static LevelManager Instance { get => instance;}
+    public List<BaseEnemy> EnemiesInLevel { get => enemiesInLevel; }
+
 
 
     private void Awake()
@@ -32,25 +35,34 @@ public class LevelManager : MonoBehaviour
 
         winConditionManager = GetComponent<BaseWinCondition>();
 
-        totalEnemies = 0;
+        GetAllEnemies();
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (var item in enemies)
-        {
-            totalEnemies++;
-        }
-
+        //Carga del siguiente nivel
         if(nextLevel != string.Empty)
             onLevelComplete.AddListener(LoadNextLevel);
     }
-
-    public void DeleteEnemyFromPool()
+    private void GetAllEnemies()
     {
-        if(TryGetComponent<EnemiesWinCondition>(out EnemiesWinCondition winCondition))
+        BaseEnemy[] arr = GameObject.FindObjectsOfType<BaseEnemy>();
+
+
+        foreach (BaseEnemy item in arr)
+        {
+            enemiesInLevel.Add(item);
+            item.onEnemyDead.AddListener(DeleteEnemyFromList);
+        }
+
+        totalEnemies = enemiesInLevel.Count;
+    }
+    public void DeleteEnemyFromList(BaseEnemy enemy)
+    {
+        enemiesInLevel.Remove(enemy);
+        if (TryGetComponent<EnemiesWinCondition>(out EnemiesWinCondition winCondition))
         {
             winCondition.CheckWinCondition();
         }
     }
+
 
     private void LoadNextLevel()
     {

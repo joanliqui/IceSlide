@@ -10,9 +10,7 @@ public class MageEnemy : BaseEnemy
     private float cntTimeNextAttack = 0;
     protected bool canCooldown = true; 
 
-
     [SerializeField] UnityEvent onAttack;
-
 
     public virtual void Sourcery()
     {

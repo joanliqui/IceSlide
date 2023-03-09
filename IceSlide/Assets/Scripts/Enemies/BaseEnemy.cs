@@ -2,18 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 public abstract class BaseEnemy : MonoBehaviour, IDamagable
 {
     [SerializeField] protected int lifes = 1;
     [SerializeField] protected Color damagedColor;
     [SerializeField] protected StateType enemyType = StateType.Neutral;
     [SerializeField] protected UnityEvent onDamaged;
+    [NonSerialized] public UnityEvent<BaseEnemy> onEnemyDead = new UnityEvent<BaseEnemy>();
     [SerializeField] protected ParticleSystem ps;
     protected bool isInmortal = false;
     protected SpriteRenderer sr;
     
     Color baseColor;
     Color enemyColor;
+
+    public bool IsInmortal { get => isInmortal;}
+
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -37,11 +42,9 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
 
     protected virtual void Dead()
     {
-        if (LevelManager.Instance)
-        {
-            LevelManager.Instance.DeleteEnemyFromPool();
-        }
-        
+
+        onEnemyDead?.Invoke(this);
+
         Collider2D c = GetComponent<Collider2D>();
         sr.enabled = false;
         c.enabled = false;
@@ -78,6 +81,32 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
     public void SetEnemyInmortal(bool inmortal)
     {
         isInmortal = inmortal;
+    }
+
+    public void SetEnemyType(StateType s)
+    {
+        enemyType = s;
+    }
+
+    public void SetRandomEnemyType()
+    {
+        int lastState;
+        
+        do
+        {
+            Array values = Enum.GetValues(typeof(StateType));
+            lastState = UnityEngine.Random.Range(0, values.Length);
+        } while (lastState == (int) enemyType);
+
+        enemyType = (StateType) lastState;
+
+        StateDictionarySO.stateColorDisctionary.TryGetValue(enemyType, out enemyColor);
+        baseColor = enemyColor;
+
+        //He de conseguir hacer una tool para cambiar el color al cambiar el enum desde el inspector ---------> TO DO
+        if (sr)
+            sr.color = enemyColor;
+
     }
 
 }
