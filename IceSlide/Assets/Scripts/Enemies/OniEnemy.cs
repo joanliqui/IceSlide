@@ -12,9 +12,9 @@ public class OniEnemy : BaseEnemy
     int frameDetection;
 
     [SerializeField] bool canMove;
+    [SerializeField] int bounceForce = 50;
     Transform player;
     PlayerMovement1 playerMovement;
-    [SerializeField] int bounceForce = 50;
 
     EnemyAudioHandler audioHandler;
 

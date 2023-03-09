@@ -79,10 +79,10 @@ public class PlayerAttack1 : MonoBehaviour
                 d.Damaged(stateType);
                 player.IsDashing = false;
             }
-            if(collision.transform.TryGetComponent<IBouncingObject>(out IBouncingObject b))
-            {
-                Bounce(b.BounceDirection());
-            }
+            //if(collision.transform.TryGetComponent<IBouncingObject>(out IBouncingObject b))
+            //{
+            //    Bounce(b.BounceDirection());
+            //}
         }
         else //El player no es invencible
         {

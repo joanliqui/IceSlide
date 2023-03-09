@@ -5,13 +5,15 @@ using UnityEngine.Events;
 public abstract class BaseEnemy : MonoBehaviour, IDamagable
 {
     [SerializeField] protected int lifes = 1;
-    protected SpriteRenderer sr;
-    Color baseColor;
     [SerializeField] protected Color damagedColor;
-    [SerializeField] protected ParticleSystem ps;
     [SerializeField] protected StateType enemyType = StateType.Neutral;
-    Color enemyColor;
     [SerializeField] protected UnityEvent onDamaged;
+    [SerializeField] protected ParticleSystem ps;
+    protected bool isInmortal = false;
+    protected SpriteRenderer sr;
+    
+    Color baseColor;
+    Color enemyColor;
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -61,6 +63,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
 
     protected bool CanBeDamagedByState(StateType type)
     {
+        if (isInmortal) return false;
 
         if(enemyType == StateType.Neutral)
         {
@@ -70,6 +73,11 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
         {
             return enemyType == type;
         }
+    }
+
+    public void SetEnemyInmortal(bool inmortal)
+    {
+        isInmortal = inmortal;
     }
 
 }

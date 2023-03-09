@@ -64,6 +64,7 @@ public class PlayerMovement1 : MonoBehaviour
     private bool _isDashing;
     private bool canDash = true;
     private bool isPlusDamage;
+    private bool keepTrackingDashPos = false;
     [SerializeField] float plusDashTime = 0.3f;
     private float cntPlusDashTime;
     [NonSerialized] private Vector3 dashPos;
@@ -450,6 +451,7 @@ public class PlayerMovement1 : MonoBehaviour
             cntDashTime = 0;
 
             _isDashing = true;
+            keepTrackingDashPos = true;
             hasArrived = false;
             canDash = false;
             isPlusDamage = false;
@@ -472,6 +474,8 @@ public class PlayerMovement1 : MonoBehaviour
         hasArrived = true;
         _isDashing = false;
 
+        keepTrackingDashPos = false;
+        wasTouchingWall = false;
 
         isPlusDamage = true;
     }
@@ -492,7 +496,7 @@ public class PlayerMovement1 : MonoBehaviour
     bool CanDashOnWallCauseAngle(float minimum, float maximum)
     {
         float angle = MyMaths.CalculateAngle2Points(transform.position, dashPos);
-
+//        Debug.Log(angle);
         bool can = false;
         if(angle > minimum && angle < minimum + 90)
         {
@@ -519,6 +523,9 @@ public class PlayerMovement1 : MonoBehaviour
 
         return can;
     }
+
+
+    bool wasTouchingWall;
     private void Dash()
     {
         //si esta Dashing..
@@ -534,13 +541,17 @@ public class PlayerMovement1 : MonoBehaviour
         {
             cntDashTime += Time.deltaTime * 5;
 
-            currentMovement.x = movDir.x;
-            currentMovement.y = movDir.y;
-            currentMovement.z = 0;
-            appliedMovement = currentMovement * _dashSpeed;
+            if (keepTrackingDashPos)
+            {
+                currentMovement.x = movDir.x;
+                currentMovement.y = movDir.y;
+                currentMovement.z = 0;
+                appliedMovement = currentMovement * _dashSpeed;
+            }
 
             if (colTop && appliedMovement.y > 0.0f)
             {
+
                 _isDashing = false;
                 hasArrived = true;
                 appliedMovement.y = 0;
@@ -548,26 +559,62 @@ public class PlayerMovement1 : MonoBehaviour
                 isPlusDamage = true;
                 
             }
-            if (colLeft && appliedMovement.x < 0.0f && !CanDashOnWallCauseAngle(180, 180))
+            if (colLeft)
             {
-                Debug.Log("Col Left + CantDashAngle 180");
-                _isDashing = false;
-                hasArrived = true;
-                appliedMovement.x = 0.0f;
-                //appliedMovement.y /= cutYMomentumDivider;
-                isPlusDamage = true;
+                if (appliedMovement.x < 0.0f)
+                {
+                    //appliedMovement.x = 0.0f; Esto tengo que meterlo en otro lado o sino rompera la condicion para los siguientes bucles
+                    keepTrackingDashPos = false;
+                    if(!CanDashOnWallCauseAngle(180, 180))
+                    {
+                        _isDashing = false;
+                        hasArrived = true;
+                        appliedMovement.x = 0.0f;
+                        appliedMovement.y /= cutYMomentumDivider;
+                        isPlusDamage = true;
+                    }
+                }
 
             }
-            if(colRight && appliedMovement.x > 0.0f && !CanDashOnWallCauseAngle(0, 360))
+            if(colRight )
             {
-                Debug.Log("Col right + CantDashAngle 360");
+                if(appliedMovement.x > 0.0f)
+                {
+                    wasTouchingWall = true;
+                    keepTrackingDashPos = false;
+                    if(!CanDashOnWallCauseAngle(0, 360))
+                    {
+                        Debug.Log("Col right + CantDashAngle 360 1");
 
-                _isDashing = false;
-                hasArrived = true;
-                appliedMovement.x = 0.0f;
-                //appliedMovement.y /= cutYMomentumDivider;
-                isPlusDamage = true;
+                        _isDashing = false;
+                        hasArrived = true;
+                        appliedMovement.x = 0.0f;
+                        appliedMovement.y /= cutYMomentumDivider;
+                        isPlusDamage = true;
+                        keepTrackingDashPos = false;
+                        wasTouchingWall = false;
+                    }
+                }
+            }
+            else //Esto puede ser el arreglo de un bug o simplemente algo a desechar. Lo veremos cuando testeemos. Por hora mantener aqui!
+            {
+                //if (wasTouchingWall)
+                //{
+                //    appliedMovement.x = 0.0f;
+                //    if (!CanDashOnWallCauseAngle(0, 360))
+                //    {
+                //        Debug.Log("Col right + CantDashAngle 360 1");
 
+                //        _isDashing = false;
+                //        hasArrived = true;
+                //        appliedMovement.x = 0.0f;
+                //        appliedMovement.y /= cutYMomentumDivider;
+                //        isPlusDamage = true;
+
+                //        keepTrackingDashPos = false;
+                //        wasTouchingWall = false;
+                //    }
+                //}
             }
             if(isGrounded && appliedMovement.y < 0.0f && !CanDashOnWallCauseAngle(270, 270))
             {
@@ -575,19 +622,6 @@ public class PlayerMovement1 : MonoBehaviour
                 hasArrived = true;
                 appliedMovement.y = 0;
                 isPlusDamage = true;
-            }
-
-            if(colLeft && startingWallNumber != 3 && startingWallNumber != 5)
-            {
-                _isDashing = false;
-                hasArrived = true;
-                appliedMovement.x = 0.0f;
-            }
-            else if(colRight && startingWallNumber != 2 && startingWallNumber != 6)
-            {
-                _isDashing = false;
-                hasArrived = true;
-                appliedMovement.x = 0.0f;
             }
         }
     }
