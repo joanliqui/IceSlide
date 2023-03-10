@@ -18,7 +18,7 @@ TagManager:
   - Player
   - Enemy
   - PostProcessing
-  - 
+  - Trail
   - 
   - 
   - 
@@ -52,6 +52,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 1454449393
+    locked: 0
+  - name: Front
+    uniqueID: 2113654521
     locked: 0
   - name: AimArrow
     uniqueID: 1380424215

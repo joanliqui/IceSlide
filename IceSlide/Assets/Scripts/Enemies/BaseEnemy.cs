@@ -18,16 +18,12 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
     Color enemyColor;
 
     public bool IsInmortal { get => isInmortal;}
+    public StateType EnemyType { get => enemyType; }
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
-        StateDictionarySO.stateColorDisctionary.TryGetValue(enemyType, out enemyColor);
-        baseColor = enemyColor;
-
-        //He de conseguir hacer una tool para cambiar el color al cambiar el enum desde el inspector ---------> TO DO
-        if(sr)
-            sr.color = enemyColor;
+        ChangeColorByState(enemyType);
     }
     #region IDamaged Interface
     public virtual void Damaged()
@@ -83,11 +79,12 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
         isInmortal = inmortal;
     }
 
+
     public void SetEnemyType(StateType s)
     {
         enemyType = s;
+        ChangeColorByState(enemyType);
     }
-
     public void SetRandomEnemyType()
     {
         int lastState;
@@ -107,6 +104,15 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
         if (sr)
             sr.color = enemyColor;
 
+    }
+    public void ChangeColorByState(StateType state)
+    {
+        StateDictionarySO.stateColorDisctionary.TryGetValue(state, out enemyColor);
+        baseColor = enemyColor;
+
+        //He de conseguir hacer una tool para cambiar el color al cambiar el enum desde el inspector ---------> TO DO
+        if (sr)
+            sr.color = enemyColor;
     }
 
 }

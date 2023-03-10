@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class MageStateEnemy : MageEnemy
 {
@@ -9,6 +10,8 @@ public class MageStateEnemy : MageEnemy
     private List<BaseEnemy> swapStateEnemies = new List<BaseEnemy>();
 
     PatrolAgent patrol;
+    int max = Enum.GetValues(typeof(StateType)).Length;
+
 
     private void Start()
     {
@@ -19,9 +22,14 @@ public class MageStateEnemy : MageEnemy
             if (item != this)
             {
                 enemies.Add(item);
+                if(item.EnemyType != StateType.Neutral)
+                {
+                    swapStateEnemies.Add(item);
+                }
                 item.onEnemyDead.AddListener(RemoveFromList);
             }
         }
+
         transform.position = patrol.GetNextPoint();
     }
 
@@ -52,6 +60,37 @@ public class MageStateEnemy : MageEnemy
     }
     public override void Sourcery()
     {
+        if(enemies.Count == 0)
+        {
+            canCooldown = false;
+            return;
+        }
+
+        SwapEnemiesState();
+
+
+        //        shieldEnemies.ForEach(b => b.SetEnemyInmortal(true));
+        canCooldown = false;
+    }
+
+    private void SwapEnemiesState()
+    {
+        foreach (BaseEnemy item in swapStateEnemies)
+        {
+            int n = (int)item.EnemyType;
+            n++;
+
+            if(n == max)
+            {
+                n = 1;
+            }
+            StateType state = (StateType)n;
+            item.SetEnemyType(state);
+        }
+    }
+
+    private void OldFunctionality()
+    {
         if (enemies.Count == 0) return;
 
         if (enemies.Count > 1)
@@ -67,7 +106,7 @@ public class MageStateEnemy : MageEnemy
 
         while (swapStateEnemies.Count != enemiesToSwap)
         {
-            BaseEnemy b = enemies[Random.Range(0, enemies.Count)];
+            BaseEnemy b = enemies[UnityEngine.Random.Range(0, enemies.Count)];
             //Si el enemigo no esta ya en la lista, lo añadimos
             bool f = swapStateEnemies.Contains(b);
             if (!f)
@@ -79,9 +118,6 @@ public class MageStateEnemy : MageEnemy
         {
             item.SetRandomEnemyType();
         }
-       
-        //        shieldEnemies.ForEach(b => b.SetEnemyInmortal(true));
-        canCooldown = false;
     }
 
     public void RemoveFromList(BaseEnemy b)

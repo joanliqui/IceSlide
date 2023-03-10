@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System.Linq;
-using UnityEngine.InputSystem;
 
 public class PlayerAttack1 : MonoBehaviour
 {
@@ -16,9 +16,13 @@ public class PlayerAttack1 : MonoBehaviour
     private int cntState = 1;
     Color stateColor = Color.white;
 
+    public delegate void StateChange(StateType t);
+    public StateChange onStateChange;
+    
+
+
     public Color StateColor { get => stateColor; set => stateColor = value; }
-
-
+    public StateType StateType { get => stateType; }
 
     private void Start()
     {
@@ -62,12 +66,14 @@ public class PlayerAttack1 : MonoBehaviour
         stateType = typesList[n];
         StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
         sr.color = stateColor;
+        onStateChange?.Invoke(stateType);
     }
     public void SetStateType(StateType state)
     {
         stateType = state;
         StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
         sr.color = stateColor;
+        onStateChange?.Invoke(stateType);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
