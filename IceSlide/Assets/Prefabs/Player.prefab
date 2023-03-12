@@ -656,6 +656,7 @@ Transform:
   - {fileID: 491148296545991757}
   - {fileID: 83676696}
   - {fileID: 3124433054976275627}
+  - {fileID: 1320076721268430810}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -761,10 +762,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa1cc8c46c8c2f47a66f6d9d8b2fff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lenghtRay: 0.1
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  groundCheckTransform: {fileID: 1320076721268430810}
+  groundCheckRadius: 0.45
+  lenghtRay: 0.1
   isGrounded: 0
   colLeft: 0
   colRight: 0
@@ -1020,3 +1023,33 @@ TrailRenderer:
   m_MinVertexDistance: 0.2
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!1 &6536072281467245684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1320076721268430810}
+  m_Layer: 7
+  m_Name: GroundChcekPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1320076721268430810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6536072281467245684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.369, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 491148297228014287}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
