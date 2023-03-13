@@ -283,7 +283,6 @@ public class PlayerMovement1 : MonoBehaviour
                 correctLeftCorner = false;
                 correctRightCorner = false;
                 canCornerCorrect = true;
-                return;
             }
         }
         else
@@ -308,7 +307,6 @@ public class PlayerMovement1 : MonoBehaviour
                 correctLeftCorner = false;
                 correctRightCorner = false;
                 canCornerCorrect = true;
-                return;
             }
         }
         else
@@ -657,7 +655,6 @@ public class PlayerMovement1 : MonoBehaviour
     bool CanDashOnWallCauseAngle(float minimum, float maximum)
     {
         float angle = MyMaths.CalculateAngle2Points(transform.position, dashPos);
-//        Debug.Log(angle);
         bool can = false;
         if(angle > minimum && angle < minimum + 90)
         {
@@ -732,9 +729,19 @@ public class PlayerMovement1 : MonoBehaviour
             {
                 if (appliedMovement.x < 0.0f)
                 {
-                    //appliedMovement.x = 0.0f; Esto tengo que meterlo en otro lado o sino rompera la condicion para los siguientes bucles
-                    keepTrackingDashPos = false;
-                    if(!CanDashOnWallCauseAngle(180, 180))
+                    if(startingWallNumber == 5)
+                    {
+                        keepTrackingDashPos = false;
+                        if(!CanDashOnWallCauseAngle(180, 180))
+                        {
+                            _isDashing = false;
+                            hasArrived = true;
+                            appliedMovement.x = 0.0f;
+                            appliedMovement.y /= cutYMomentumDivider;
+                            isPlusDamage = true;
+                        }
+                    }
+                    else
                     {
                         _isDashing = false;
                         hasArrived = true;
@@ -742,6 +749,7 @@ public class PlayerMovement1 : MonoBehaviour
                         appliedMovement.y /= cutYMomentumDivider;
                         isPlusDamage = true;
                     }
+                    //appliedMovement.x = 0.0f; Esto tengo que meterlo en otro lado o sino rompera la condicion para los siguientes bucles
                 }
 
             }
@@ -750,10 +758,23 @@ public class PlayerMovement1 : MonoBehaviour
                 if(appliedMovement.x > 0.0f)
                 {
                     keepTrackingDashPos = false;
-                    if(!CanDashOnWallCauseAngle(0, 360))
+                    if(startingWallNumber == 6)
                     {
-                        Debug.Log("Col right + CantDashAngle 360 1");
+                        if(!CanDashOnWallCauseAngle(0, 360))
+                        {
+                            Debug.Log("Col right + CantDashAngle 360 1");
 
+                            _isDashing = false;
+                            hasArrived = true;
+                            appliedMovement.x = 0.0f;
+                            appliedMovement.y /= cutYMomentumDivider;
+                            isPlusDamage = true;
+                            keepTrackingDashPos = false;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Prevent bug on right side");
                         _isDashing = false;
                         hasArrived = true;
                         appliedMovement.x = 0.0f;

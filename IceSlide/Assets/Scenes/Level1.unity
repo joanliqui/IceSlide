@@ -287,6 +287,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GlobalPostProcessingVolume
       objectReference: {fileID: 0}
+    - target: {fileID: 7292502685000575387, guid: 019d61bb5070e0e47beef6c1aa60bceb, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 019d61bb5070e0e47beef6c1aa60bceb, type: 3}
 --- !u!4 &63050424 stripped
@@ -946,6 +950,10 @@ PrefabInstance:
     - target: {fileID: 6413527527704994984, guid: ac5516bed496b634180bf680bf545f4d, type: 3}
       propertyPath: m_Name
       value: PlayerPostProcessing
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413527527704994984, guid: ac5516bed496b634180bf680bf545f4d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6413527527704994987, guid: ac5516bed496b634180bf680bf545f4d, type: 3}
       propertyPath: m_RootOrder
@@ -1798,8 +1806,16 @@ PrefabInstance:
       value: 0.32
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: verticalOuter
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: horizontalInner
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
+      propertyPath: horizontalOuter
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 491148297228014278, guid: eb2ad96034c7c534599370c7c601b102, type: 3}
       propertyPath: horizontalOutter
@@ -2061,10 +2077,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3611789960641679314, guid: 8050ede890ba2314bab7c02a60e4c307, type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 3447
-      objectReference: {fileID: 0}
     - target: {fileID: 3611789960641679315, guid: 8050ede890ba2314bab7c02a60e4c307, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -2112,10 +2124,6 @@ PrefabInstance:
     - target: {fileID: 3611789960641679316, guid: 8050ede890ba2314bab7c02a60e4c307, type: 3}
       propertyPath: m_Name
       value: Main CameraPrefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611789961589849405, guid: 8050ede890ba2314bab7c02a60e4c307, type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 128
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8050ede890ba2314bab7c02a60e4c307, type: 3}
