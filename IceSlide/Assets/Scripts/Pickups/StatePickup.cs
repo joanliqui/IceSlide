@@ -10,6 +10,15 @@ public class StatePickup : MonoBehaviour, IPickeable
     [SerializeField] StateType stateType;
     Color stateColor;
 
+    [Header("Distortion Variables")]
+    [SerializeField] SpriteRenderer srWithMaterial;
+    [SerializeField] float deactivationSpeed = 0.05f;
+
+    private const string DISTORTIONSCALE = "_distortionScale";
+    private bool lerpDistortion = false;
+    private Material distortionMaterial;
+    float cntDistortionAmount;
+
     private void Start()
     {
         col = GetComponent<Collider2D>();
@@ -18,11 +27,21 @@ public class StatePickup : MonoBehaviour, IPickeable
 
         StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
         sr.color = stateColor;
+        
+        if(srWithMaterial)
+            distortionMaterial = srWithMaterial.material;
+
+        if (distortionMaterial)
+        {
+   
+            cntDistortionAmount = distortionMaterial.GetFloat(DISTORTIONSCALE);
+        }
     }
 
     public void Pick()
     {
         playerAttack.SetStateType(stateType);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -31,6 +50,10 @@ public class StatePickup : MonoBehaviour, IPickeable
         {
             Pick();
             Deactivate();
+            if (distortionMaterial)
+            {
+                DeactivateDistortion();
+            }
         }
     }
 
@@ -38,5 +61,27 @@ public class StatePickup : MonoBehaviour, IPickeable
     {
         sr.enabled = false;
         col.enabled = false;
+    }
+
+    private void DeactivateDistortion()
+    {
+        lerpDistortion = true;
+    }
+
+    private void Update()
+    {
+        if (lerpDistortion)
+        {
+            if(cntDistortionAmount > 0.0f)
+            {
+                cntDistortionAmount -= Time.deltaTime * deactivationSpeed;
+                distortionMaterial.SetFloat(DISTORTIONSCALE, cntDistortionAmount);
+            }
+            else
+            {
+                srWithMaterial.enabled = false;
+                lerpDistortion = false;
+            }
+        }
     }
 }

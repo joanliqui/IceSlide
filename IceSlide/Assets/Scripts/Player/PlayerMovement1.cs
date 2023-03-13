@@ -202,8 +202,6 @@ public class PlayerMovement1 : MonoBehaviour
         CheckEnvironment();
         HandleRotation();
 
-   
-
         if (isBouncing)
         {
             if(colTop)
@@ -366,8 +364,6 @@ public class PlayerMovement1 : MonoBehaviour
             canCornerCorrect = false;
         }
         #endregion
-
-
 
         #region CheckLeft
         lCenterPos = new Vector2(col.bounds.min.x, col.bounds.center.y);
@@ -1049,8 +1045,6 @@ public class PlayerMovement1 : MonoBehaviour
 
         Gizmos.DrawLine(transform.position + _horizontalInnerRaycastOffset + Vector3.right * _topRaycastLenght,
                    transform.position + _horizontalInnerRaycastOffset + Vector3.right * _topRaycastLenght + Vector3.up * _topRaycastLenght);
-
-
 
         #endregion
 

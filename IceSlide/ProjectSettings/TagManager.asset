@@ -19,7 +19,7 @@ TagManager:
   - Enemy
   - PostProcessing
   - Trail
-  - 
+  - DistortionEffect
   - 
   - 
   - 
@@ -58,4 +58,7 @@ TagManager:
     locked: 0
   - name: AimArrow
     uniqueID: 1380424215
+    locked: 0
+  - name: DistortionEffect
+    uniqueID: 3131742647
     locked: 0
