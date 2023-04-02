@@ -283,6 +283,7 @@ public class PlayerMovement1 : MonoBehaviour
                 correctLeftCorner = false;
                 correctRightCorner = false;
                 canCornerCorrect = true;
+                return;
             }
         }
         else
@@ -307,6 +308,7 @@ public class PlayerMovement1 : MonoBehaviour
                 correctLeftCorner = false;
                 correctRightCorner = false;
                 canCornerCorrect = true;
+                return;
             }
         }
         else
@@ -326,11 +328,14 @@ public class PlayerMovement1 : MonoBehaviour
         {
             if(leftOuterDown && !leftInnerDown || leftOuterTop && !leftInnerTop)
             {
-                correctLeftCorner = true;
-                correctDownCorner = false;
-                correctTopCorner = false;
-                canCornerCorrect = true;
-                return;
+                if(appliedMovement.x < 0f)
+                {
+                    correctLeftCorner = true;
+                    correctDownCorner = false;
+                    correctTopCorner = false;
+                    canCornerCorrect = true;
+                    return;
+                }
             }
             else
             {
@@ -351,11 +356,14 @@ public class PlayerMovement1 : MonoBehaviour
 
         if (rightOuterDown && !rightInnerDown || rightOuterTop && !rightInnerTop)
         {
-            correctRightCorner = true;
-            correctDownCorner = false;
-            correctTopCorner = false;
-            canCornerCorrect = true;
-            return;
+            if(appliedMovement.x > 0.0f)
+            {
+                correctRightCorner = true;
+                correctDownCorner = false;
+                correctTopCorner = false;
+                canCornerCorrect = true;
+                return;
+            }
         }
         else
         {

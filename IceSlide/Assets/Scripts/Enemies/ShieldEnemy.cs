@@ -15,8 +15,9 @@ public class ShieldEnemy : BaseEnemy
     [SerializeField] bool canMove;
     private Transform player;
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         sr = GetComponent<SpriteRenderer>();
         shield = GetComponentInChildren<ShieldObject>();
@@ -65,6 +66,7 @@ public class ShieldEnemy : BaseEnemy
         if(!facingRight && player.position.x > transform.position.x || facingRight && player.position.x < transform.position.x)
         {
             lifes--;
+            onDamaged?.Invoke();
             if (lifes == 1) sr.color = Color.black;
             if (lifes <= 0)
                 Dead();
@@ -75,12 +77,17 @@ public class ShieldEnemy : BaseEnemy
     {
         if (CanBeDamagedByState(type))
         {
+            onDamaged?.Invoke();
             if (!facingRight && player.position.x > transform.position.x || facingRight && player.position.x < transform.position.x)
             {
                 lifes--;
                 if (lifes <= 0)
                     Dead();
             }
+        }
+        else
+        {
+            playerLife.PlayerDead();
         }
     }
 

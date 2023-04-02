@@ -24,6 +24,8 @@ public class PlayerLife : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
+
+        onPlayerDead.AddListener(CameraHandler.Instance.CameraShake);
     }
     public void PlayerDead()
     {

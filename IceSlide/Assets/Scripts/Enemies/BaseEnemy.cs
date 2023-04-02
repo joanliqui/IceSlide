@@ -13,6 +13,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
     [SerializeField] protected ParticleSystem ps;
     protected bool isInmortal = false;
     protected SpriteRenderer sr;
+    protected static PlayerLife playerLife;
     
     Color baseColor;
     Color enemyColor;
@@ -22,9 +23,25 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
 
     private void Awake()
     {
+        if(playerLife == null)
+        {
+            playerLife = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerLife>();
+        }
+
         sr = GetComponent<SpriteRenderer>();
         ChangeColorByState(enemyType);
+        
     }
+    protected void Start()
+    {
+        JoinEventMethods();
+    }
+
+    protected void JoinEventMethods()
+    {
+        onDamaged.AddListener(CameraHandler.Instance.CameraShake);
+    }
+
     #region IDamaged Interface
     public virtual void Damaged()
     {

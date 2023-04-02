@@ -18,8 +18,9 @@ public class MageShieldEnemy : MageEnemy
 
     PatrolAgent patrol;
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         patrol = GetComponent<PatrolAgent>();
 
         foreach (BaseEnemy item in LevelManager.Instance.EnemiesInLevel)

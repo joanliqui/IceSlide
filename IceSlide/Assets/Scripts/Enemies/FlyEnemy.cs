@@ -14,10 +14,12 @@ public class FlyEnemy : BaseEnemy
     float reachedPositionDistance = 0.5f;
 
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         patrol = GetComponent<PatrolAgent>();
         startingPos = patrol.GetNextPoint();
+        transform.position = startingPos;
         roamPos = startingPos;
     }
 
@@ -28,20 +30,25 @@ public class FlyEnemy : BaseEnemy
             roamPos = patrol.GetNextPoint();
         }
         //El movimineto que mejor se sienta
-        //Vector3 dir = roamPos - transform.position;
-        Vector3 dir = (roamPos - transform.position).normalized; 
+        Vector3 dir = roamPos - transform.position;
+        //Vector3 dir = (roamPos - transform.position).normalized; 
 
         transform.position += movSpeed * Time.deltaTime * dir;
     }
 
     public override void Damaged(StateType type)
     {
-        if(CanBeDamagedByState(type))
+        onDamaged?.Invoke();
+        if (CanBeDamagedByState(type))
         {
             lifes--;
             onDamaged?.Invoke();
             if (lifes <= 0)
                 Dead();
+        }
+        else
+        {
+            playerLife.PlayerDead();
         }
 
     }

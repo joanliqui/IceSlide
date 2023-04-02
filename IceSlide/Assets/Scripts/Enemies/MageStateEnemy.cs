@@ -13,8 +13,9 @@ public class MageStateEnemy : MageEnemy
     int max = Enum.GetValues(typeof(StateType)).Length;
 
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         patrol = GetComponent<PatrolAgent>();
 
         foreach (BaseEnemy item in LevelManager.Instance.EnemiesInLevel)

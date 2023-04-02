@@ -7,6 +7,8 @@ public class StatePickup : MonoBehaviour, IPickeable
     Collider2D col;
     SpriteRenderer sr;
     PlayerAttack1 playerAttack;
+    AudioSource source;
+
     [SerializeField] StateType stateType;
     Color stateColor;
 
@@ -19,11 +21,14 @@ public class StatePickup : MonoBehaviour, IPickeable
     private Material distortionMaterial;
     float cntDistortionAmount;
 
+    public delegate void Picked();
+    private event Picked onPicked;
     private void Start()
     {
         col = GetComponent<Collider2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
         playerAttack = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAttack1>();
+        source = GetComponent<AudioSource>();
 
         StateDictionarySO.stateColorDisctionary.TryGetValue(stateType, out stateColor);
         sr.color = stateColor;
@@ -33,9 +38,13 @@ public class StatePickup : MonoBehaviour, IPickeable
 
         if (distortionMaterial)
         {
-   
             cntDistortionAmount = distortionMaterial.GetFloat(DISTORTIONSCALE);
         }
+
+        onPicked += Pick;
+        onPicked += Deactivate;
+        onPicked += DeactivateDistortion;
+        onPicked += SoundOnPick;
     }
 
     public void Pick()
@@ -48,12 +57,7 @@ public class StatePickup : MonoBehaviour, IPickeable
     {
         if (collision.CompareTag("Player"))
         {
-            Pick();
-            Deactivate();
-            if (distortionMaterial)
-            {
-                DeactivateDistortion();
-            }
+            onPicked?.Invoke();
         }
     }
 
@@ -65,6 +69,7 @@ public class StatePickup : MonoBehaviour, IPickeable
 
     private void DeactivateDistortion()
     {
+        if (!distortionMaterial) return;
         lerpDistortion = true;
     }
 
@@ -83,5 +88,12 @@ public class StatePickup : MonoBehaviour, IPickeable
                 lerpDistortion = false;
             }
         }
+    }
+
+    private void SoundOnPick()
+    {
+        if (!source) return;
+
+        source.Play();
     }
 }

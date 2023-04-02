@@ -41,11 +41,16 @@ public class MageEnemy : BaseEnemy
             if (lifes <= 0)
                 Dead();
         }
+        else
+        {
+            playerLife.PlayerDead();
+        }
 
     }
 
     protected override void Dead()
     {
+        onDamaged?.Invoke();
         base.Dead();
         if (ps)
             ps.Play();

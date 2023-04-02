@@ -12,10 +12,9 @@ public class GumbaEnemy : BaseEnemy
 
     [SerializeField] bool canMove;
 
-  
     public override void Damaged()
     {
-
+        onDamaged?.Invoke();
         lifes--;
         if(lifes <= 0)
             Dead();
@@ -24,9 +23,14 @@ public class GumbaEnemy : BaseEnemy
     {
         if (CanBeDamagedByState(type))
         {
+            onDamaged?.Invoke();
             lifes--;
             if (lifes <= 0)
                 Dead();
+        }
+        else
+        {
+            playerLife.PlayerDead();
         }
     }
 

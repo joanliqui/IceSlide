@@ -45,6 +45,7 @@ Material:
     - Vector1_12cf23d7039e47e2b2b51a181d2c8590: 1
     - Vector1_5a68091920fd4fe6b8d706b5d28d17ed: 0.4
     - Vector1_65ec7785cae94fe5866b0c96d0dfaf4a: 16.66
+    - _distortionScale: 20.93
     m_Colors:
     - Vector2_850b43cb6ce94ab59159688949cb8e3e: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

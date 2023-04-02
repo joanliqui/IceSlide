@@ -19,8 +19,9 @@ public class OniEnemy : BaseEnemy
     EnemyAudioHandler audioHandler;
 
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerMovement = player.GetComponent<PlayerMovement1>();
         audioHandler = GetComponentInChildren<EnemyAudioHandler>();
@@ -69,6 +70,10 @@ public class OniEnemy : BaseEnemy
                 Dead();
             
             StartCoroutine(VisualDamaged(damagedColor));
+        }
+        else
+        {
+            playerLife.PlayerDead();
         }
     }
     #endregion

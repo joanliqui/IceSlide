@@ -5,7 +5,6 @@ using UnityEngine;
 public class PatrolAgent : MonoBehaviour
 {
     [SerializeField] Transform[] patrolPath;
-    private int cntPoint = 0;
     private int destPoint = -1;
 
     public Transform[] PatrolPath { get => patrolPath;}
