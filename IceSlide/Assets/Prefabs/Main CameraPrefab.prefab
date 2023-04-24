@@ -348,8 +348,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vc: {fileID: 826008613}
-  intensity: 2
-  time: 0.1
+  intensity: 5
+  time: 0.15
 --- !u!1 &3611789961589849393
 GameObject:
   m_ObjectHideFlags: 0

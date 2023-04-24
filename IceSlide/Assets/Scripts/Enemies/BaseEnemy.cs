@@ -14,6 +14,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
     protected bool isInmortal = false;
     protected SpriteRenderer sr;
     protected static PlayerLife playerLife;
+    protected Animator anim;
     
     Color baseColor;
     Color enemyColor;
@@ -29,6 +30,7 @@ public abstract class BaseEnemy : MonoBehaviour, IDamagable
         }
 
         sr = GetComponent<SpriteRenderer>();
+        TryGetComponent<Animator>(out anim);
         ChangeColorByState(enemyType);
         
     }

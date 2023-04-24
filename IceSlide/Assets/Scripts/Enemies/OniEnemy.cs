@@ -18,6 +18,13 @@ public class OniEnemy : BaseEnemy
 
     EnemyAudioHandler audioHandler;
 
+    [Header("Attack Variables")]
+    [SerializeField] Transform attackPos;
+    [SerializeField] float attackRadius = 1f;
+    [SerializeField] float timeAttacking = 0.6f;
+    [SerializeField] LayerMask playerLayer;
+    private float cntTimeAttacking = 0.0f;
+    private bool isAttacking = false;
 
     private new void Start()
     {
@@ -51,16 +58,16 @@ public class OniEnemy : BaseEnemy
     public override void Damaged(StateType type)
     {
         
-            Vector3 bounceDir;
-            if (player.position.x > transform.position.x)
-            {
-                bounceDir = new Vector3(1, 2, 0);
-            }
-            else
-            {
-                bounceDir = new Vector3(-1, 2, 0);
-            }
-            playerMovement.BounceOnDash(bounceDir.normalized * bounceForce);
+        Vector3 bounceDir;
+        if (player.position.x > transform.position.x)
+        {
+            bounceDir = new Vector3(1, 2, 0);
+        }
+        else
+        {
+            bounceDir = new Vector3(-1, 2, 0);
+        }
+        playerMovement.BounceOnDash(bounceDir.normalized * bounceForce);
 
         if (CanBeDamagedByState(type))
         {
@@ -75,8 +82,27 @@ public class OniEnemy : BaseEnemy
         {
             playerLife.PlayerDead();
         }
+
+        StartAttack();
     }
     #endregion
+
+    private void StartAttack()
+    {
+        //Logic
+        StartCoroutine(DelayToAttack());
+        //Visuals
+        anim.SetTrigger("Attack");
+
+    }
+
+    private IEnumerator DelayToAttack()
+    {
+        yield return new WaitForSeconds(0.1f);
+        isAttacking = true;
+        cntTimeAttacking = 0f;
+    }
+
     protected override void Dead()
     {
         base.Dead();
@@ -102,6 +128,26 @@ public class OniEnemy : BaseEnemy
         {
             frameDetection++;
         }
+
+        //Attack
+        if (isAttacking)
+        {
+            if(cntTimeAttacking < timeAttacking)
+            {
+                cntTimeAttacking += Time.deltaTime;
+
+                Collider2D playerCol = Physics2D.OverlapCircle(attackPos.position, attackRadius, playerLayer);
+                if (playerCol)
+                {
+                    playerLife.PlayerDead();
+                }
+                Debug.Log(playerCol);
+            }
+            else
+            {
+                isAttacking = false;
+            }
+        }
     }
 
     void Flip()
@@ -113,6 +159,10 @@ public class OniEnemy : BaseEnemy
     {
         Gizmos.DrawRay(checkerPos.position, Vector2.down * rayLenght);
         Gizmos.DrawRay(checkerPos.position, transform.right * rayLenght);
+        if (isAttacking)
+        {
+            Gizmos.DrawWireSphere(attackPos.position, attackRadius);
+        }
 
     }
 }

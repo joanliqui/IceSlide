@@ -1758,7 +1758,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6008245036301014820, guid: a0a9b738af03cbd4391244de68f2b929, type: 3}
       propertyPath: stateType
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6008245036301014822, guid: a0a9b738af03cbd4391244de68f2b929, type: 3}
       propertyPath: m_RootOrder
@@ -2930,6 +2930,10 @@ PrefabInstance:
     - target: {fileID: 9014374336644328521, guid: 9f76f0c0ce7c50b458c6683123aa44e4, type: 3}
       propertyPath: m_Name
       value: MageStateEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 9014374336644328521, guid: 9f76f0c0ce7c50b458c6683123aa44e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9014374336644328522, guid: 9f76f0c0ce7c50b458c6683123aa44e4, type: 3}
       propertyPath: m_RootOrder

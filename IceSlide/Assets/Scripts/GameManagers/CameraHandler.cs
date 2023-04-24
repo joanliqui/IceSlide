@@ -36,6 +36,11 @@ public class CameraHandler : MonoBehaviour
         playerCam.orthographicSize = main.orthographicSize;
 
         shake = vc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        if(vc.transform.parent == this.transform)
+        {
+            vc.transform.SetParent(null);
+        }
     }
 
     public void CameraShake()
